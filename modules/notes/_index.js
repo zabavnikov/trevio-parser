@@ -1,38 +1,57 @@
 const Note = require('./Note');
-const Media = require('../media/Media');
+const Parser = require('../../Parser');
+const settings = require('../../settings');
+const forEach = require('lodash/forEach');
+const fs = require('fs');
 
-const ImageParser = require('../../ImageParser');
+const outputNotes = [], outputImages = [], schema = {
+  user_id: 'owner_id',
+  travel_id: 'travel_id',
+  company_id: 'company_id',
+  title: 'title',
+  short_text: 'short_text',
+  wysiwyg: 'text',
+  message_count: 'comments_count',
+};
 
-Note.findByPk(6)
-  .then(response => {
-    const imageParser = new ImageParser(response.wysiwyg);
+let limit = 1, offset = 0;
 
-    /*
-      Пути до изображений.
-     */
-    const paths = imageParser.getPathsToOriginalImages();
-
-    console.log(imageParser.getText());
-
-    /*
-      Названия изображений.
-     */
-    /*const filenames = [];
-
-    paths.forEach(path => {
-      // Разбиваем путь на части.
-      path = path.split('/');
-
-      // Получаем элемент массива - это название файла.
-      filenames.push(path[path.length - 1])
+function notes() {
+  if (offset >= 1000) {
+    fs.writeFile(settings.paths.json + '/notes/notes.json', JSON.stringify(outputNotes), function (err) {
+      if (err) return console.log(err);
     });
 
-    Media.findAll({
-      where: {
-        filename: filenames
-      }
-    })
-    .then(response => {
-      console.log(response)
-    });*/
-  });
+    fs.writeFile(settings.paths.json + '/notes/images.json', JSON.stringify(outputImages), function (err) {
+      if (err) return console.log(err);
+    });
+
+    return;
+  }
+
+  Note
+    .findAll({offset, limit})
+    .then(items => {
+      const insert = {};
+
+      forEach(items, item => {
+        const parser = new Parser(item, 'notes');
+
+        item = parser.getModel();
+
+        forEach(parser.getImages(), image => outputImages.push(image));
+
+        forEach(schema, (newFieldName, oldFieldName) => {
+          insert[newFieldName] = item[oldFieldName];
+        });
+      });
+
+      outputNotes.push(insert);
+
+      offset += limit;
+
+      setTimeout(() => notes(), 1000);
+    });
+}
+
+notes();

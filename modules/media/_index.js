@@ -31,7 +31,7 @@ function media() {
           Конечная папка для изображения.
          */
         const dir = [
-          settings.imageFolder,
+          settings.paths.images,
           settings.moduleIds[image.MediaBind.module_type_id],
           date.getFullYear(),
           date.getUTCMonth() < 10 ? '0' + date.getUTCMonth() : date.getUTCMonth(),
