@@ -1,0 +1,10 @@
+1. Делает селект из таблицы media (+ join в таблицу media_bind по ключю media_id).
+2. Теперь у нас есть media.user_id для генерации нового пути и media_bind.module_type_id для понимания в какую папку (travels, notes, posts) складывать изображения.
+3. На основе данных из шага 2, генерируем путь для загрузки.
+4. Из media.filename получаем старый путь к оригинальному изображению.
+5. Оргинальное изображение ложим в папку по новому пути.
+
+============
+module_id = это ID в таблице media.
+module_type_id = это номер модуля, может быть travels, users, notes, blog.
+module_id = это ID в таблице travels, users, notes, blog.
