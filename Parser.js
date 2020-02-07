@@ -49,7 +49,7 @@ class Parser {
           const oRelativePath = `${this._relativePathWithPrefix()}/${filename}`;
 
           return `
-          <img src="/imageache/${oRelativePath}" data-src="https://trevio.ru/storage/${oRelativePath}" />
+          <img src="/imagecache/${oRelativePath}" data-src="${settings.url}/${oRelativePath}" />
         `.trim();
         }
 

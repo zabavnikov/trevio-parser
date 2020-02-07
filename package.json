@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "notes": "node ./modules/notes/_index.js"
+  },
   "dependencies": {
     "lodash": "^4.17.15",
     "mysql2": "^2.1.0",
