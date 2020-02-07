@@ -35,16 +35,13 @@ class Parser {
           // Последний элемент массива - это название файла.
           const filename = pathParts[pathParts.length - 1];
 
-          this.id += 1;
-
           this.images.push({
-            id: this.id,
             owner_id: this.model.user_id,
             model_id: this.model.id,
-            disk: this.modelType,
-            path: `${this._relativePath()}/${filename}`,
-            created_at: this.model.createdAt,
-            updated_at: this.model.createdAt,
+            disk: `'${this.modelType}'`,
+            path: `'${this._relativePath()}/${filename}'`,
+            created_at: `'${new Date(Date.parse(this.model.createdAt)).toLocaleString()}'`,
+            updated_at: `'${new Date(Date.parse(this.model.updatedAt)).toLocaleString()}'`,
           });
 
           this._download(relativePath, filename);
@@ -52,7 +49,7 @@ class Parser {
           const oRelativePath = `${this._relativePathWithPrefix()}/${filename}`;
 
           return `
-          <img src="/imageache/${oRelativePath}" data-id="${this.id}" data-src="https://trevio.ru/storage/${oRelativePath}" />
+          <img src="/imageache/${oRelativePath}" data-src="https://trevio.ru/storage/${oRelativePath}" />
         `.trim();
         }
 

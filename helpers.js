@@ -1,4 +1,4 @@
-const fs = require('fs'), http = require('http');
+const fs = require('fs'), http = require('http'), forEach = require('lodash/forEach');;
 
 function saveImageToDisk(url, localPath) {
   http.get(url, function(response) {
@@ -22,4 +22,29 @@ function getImageUrlFromText(text) {
   }
 }
 
-module.exports = { getImageUrlFromText, saveImageToDisk };
+
+function normalizeData(model, schema) {
+  const values = [];
+
+  forEach(schema, (newFieldName, oldFieldName) => {
+    let value = model[oldFieldName];
+
+    if (typeof value === 'string') {
+      value = `'${value}'`;
+    }
+
+    if (value === null) {
+      value = `${null}`;
+    }
+
+    if (oldFieldName === 'createdAt' || oldFieldName === 'updatedAt') {
+      value = `'${new Date(Date.parse(model[oldFieldName])).toLocaleString()}'`;
+    }
+
+    values.push(value);
+  });
+
+  return values;
+}
+
+module.exports = { normalizeData, getImageUrlFromText, saveImageToDisk };

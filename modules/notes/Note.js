@@ -11,6 +11,9 @@ module.exports = sequelize.define('Note', {
   travel_id: {
     type: DataTypes.INTEGER,
   },
+  note_type_id: {
+    type: DataTypes.INTEGER,
+  },
   company_id: {
     type: DataTypes.INTEGER,
   },
@@ -27,6 +30,10 @@ module.exports = sequelize.define('Note', {
     type: DataTypes.INTEGER,
   },
   createdAt: {
+    type: DataTypes.DATE,
+    field: 'created_at',
+  },
+  updatedAt: {
     type: DataTypes.DATE,
     field: 'created_at',
   },

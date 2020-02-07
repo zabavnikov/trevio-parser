@@ -1,52 +1,64 @@
+const fs = require('fs');
 const Note = require('./Note');
 const Parser = require('../../Parser');
 const settings = require('../../settings');
+const {normalizeData} = require('../../helpers');
 const forEach = require('lodash/forEach');
-const fs = require('fs');
 
-const outputNotes = [], outputImages = [], schema = {
+const outputImages = [], schema = {
   user_id: 'owner_id',
   travel_id: 'travel_id',
+  note_type_id: 'category_id',
   company_id: 'company_id',
   title: 'title',
   short_text: 'short_text',
   wysiwyg: 'text',
   message_count: 'comments_count',
+  createdAt: 'created_at',
+  updatedAt: 'updated_at',
 };
 
 let limit = 1, offset = 0;
 
 function notes() {
-  if (offset >= 1000) {
-    fs.writeFile(settings.paths.json + '/notes/notes.json', JSON.stringify(outputNotes), function (err) {
-      if (err) return console.log(err);
-    });
-
-    fs.writeFile(settings.paths.json + '/notes/images.json', JSON.stringify(outputImages), function (err) {
-      if (err) return console.log(err);
-    });
-
+  if (offset >= 5) {
     return;
   }
 
   Note
     .findAll({offset, limit})
     .then(items => {
-      const insert = {};
-
       forEach(items, item => {
         const parser = new Parser(item, 'notes');
 
+        /*
+          Вернет item с обновленныйм полем wysiwyg.
+         */
         item = parser.getModel();
 
-        forEach(parser.getImages(), image => outputImages.push(image));
+        /*
+          Заполняем новые поля данными из старых полей.
+          normalizeData вернет набор полей уже подготовленных для вставки.
+         */
+        fs.appendFile(
+          settings.paths.sql + '/notes/notes.sql',
+          `INSERT INTO notes (${Object.values(schema).join(', ')}) VALUES (${normalizeData(item, schema).join(', ')});\r\n`,
+          function (error) {
+            if (error) return console.log(error);
+          });
 
-        forEach(schema, (newFieldName, oldFieldName) => {
-          insert[newFieldName] = item[oldFieldName];
+        /*
+          Генерируем SQL файл для изображений.
+         */
+        forEach(parser.getImages(), image => {
+          fs.appendFile(
+            settings.paths.sql + '/notes/images.sql',
+            `INSERT INTO notes_images (${Object.keys(image).join(', ')}) VALUES (${Object.values(image).join(', ')});\r\n`,
+            function (error) {
+              if (error) return console.log(error);
+            });
         });
       });
-
-      outputNotes.push(insert);
 
       offset += limit;
 

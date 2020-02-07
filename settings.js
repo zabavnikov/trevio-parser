@@ -5,8 +5,7 @@ module.exports = {
 
   paths: {
     images: path.resolve(__dirname, './_dump/images'),
-    json: path.resolve(__dirname, './_dump/json'),
-    mysql: path.resolve(__dirname, './_dump/mysql'),
+    sql: path.resolve(__dirname, './_dump/sql'),
   },
 
   /*
