@@ -41,6 +41,14 @@ function normalizeData(model, schema) {
       value = `'${new Date(Date.parse(model[oldFieldName])).toLocaleString()}'`;
     }
 
+    if (oldFieldName === 'wysiwyg') {
+      value = value
+        .replace('<p><br data-mce-bogus="1"></p>', '')
+        .replace('<p><br></p>', '')
+        .replace('&nbsp; ', '')
+        .replace('&nbsp;', '');
+    }
+
     values.push(value);
   });
 
