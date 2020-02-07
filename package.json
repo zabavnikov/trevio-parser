@@ -1,5 +1,6 @@
 {
   "scripts": {
+    "users": "node ./modules/users/_index.js",
     "notes": "node ./modules/notes/_index.js"
   },
   "dependencies": {

@@ -1,4 +1,24 @@
-const fs = require('fs'), http = require('http'), forEach = require('lodash/forEach');;
+const fs = require('fs'), http = require('http'), forEach = require('lodash/forEach');
+
+function normalizeFieldsOfModel(model) {
+  const values = [];
+
+  forEach(model, (value, field) => {
+    if (value === null || field === 'avatar') {
+      values.push(`${null}`);
+    } else {
+      if (typeof value === 'string') {
+        values.push(`"${value.replace(new RegExp(/("|')/, 'gm'), '')}"`);
+      }
+
+      if (field === 'created_at' || field === 'updated_at') {
+        values.push(`"${new Date(Date.parse(model[field])).toLocaleString()}"`);
+      }
+    }
+  });
+
+  return values;
+}
 
 function normalizeData(model, schema) {
   const values = [];
@@ -32,4 +52,4 @@ function normalizeData(model, schema) {
   return values;
 }
 
-module.exports = { normalizeData };
+module.exports = { normalizeFieldsOfModel, normalizeData };
