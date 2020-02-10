@@ -16,6 +16,7 @@ function run() {
     })
     .then(users => {
       users.forEach(user => {
+        // Удаляем чтобы колонка не попала в SQL.
         delete user.id;
 
         fs.appendFile(
