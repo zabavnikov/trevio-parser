@@ -1,6 +1,8 @@
 const { DataTypes, sequelize } = require('../../database');
 
-module.exports = sequelize.define('MediaBind', {
+const Media = require('./Media');
+
+const MediaBind = sequelize.define('MediaBind', {
   media_id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -15,3 +17,7 @@ module.exports = sequelize.define('MediaBind', {
   tableName: 'media_bind',
   timestamps: false,
 });
+
+MediaBind.hasOne(Media, {foreignKey: 'avatar', sourceKey: 'media_id'});
+
+module.exports = MediaBind;

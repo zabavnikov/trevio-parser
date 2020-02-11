@@ -1,12 +1,15 @@
 {
   "scripts": {
-    "users": "node ./modules/users/_index.js",
+    "users": "node ./modules/users/bin/index.js",
+    "users-avatars": "node ./modules/users/bin/avatars.js",
     "notes": "node ./modules/notes/_index.js"
   },
   "dependencies": {
     "lodash": "^4.17.15",
     "md5": "^2.2.1",
     "mysql2": "^2.1.0",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.5",
     "sequelize": "^5.21.3"
   }
 }

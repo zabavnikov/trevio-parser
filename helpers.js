@@ -1,23 +1,21 @@
-const fs = require('fs'), http = require('http'), forEach = require('lodash/forEach');
+const fs = require('fs'), http = require('http'), forEach = require('lodash/forEach'), md5 = require('md5');
 
 function normalizeFieldsOfModel(model) {
-  const values = [];
-
-  forEach(model, (value, field) => {
-    if (value === null || field === 'avatar') {
-      values.push(`${null}`);
+  forEach(model, (value, key) => {
+    if (value === null) {
+      model[key] = `${null}`;
     } else {
       if (typeof value === 'string') {
-        values.push(`"${value.replace(new RegExp(/("|')/, 'gm'), '')}"`);
-      }
+        if (value.length > 1000) {
+          model[key] = value.substr(0, 1000);
+        }
 
-      if (field === 'created_at' || field === 'updated_at') {
-        values.push(`"${new Date(Date.parse(model[field])).toLocaleString()}"`);
+        model[key] = `"${model[key].replace(new RegExp(/("|')/, 'gm'), '')}"`;
       }
     }
   });
 
-  return values;
+  return model;
 }
 
 function normalizeData(model, schema) {
