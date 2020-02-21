@@ -2,7 +2,6 @@ const md5 = require('md5');
 
 const { DataTypes, sequelize } = require('../../../database');
 
-const Media = require('../../media/Media');
 const MediaBind = require('../../media/MediaBind');
 
 const User = sequelize.define('User', {
@@ -30,7 +29,7 @@ const User = sequelize.define('User', {
 
       if (isExists > 0) {
         return [
-          md5(this.getDataValue('id')).substr(0, 6).match(/[a-z0-9]{2}/g).join('/'),
+          md5(this.getDataValue('id')).substr(0, 8).match(/[a-z0-9]{2}/g).join('/'),
           this.getDataValue('id'),
           'avatar.jpg'
         ].join('/');
@@ -41,9 +40,27 @@ const User = sequelize.define('User', {
   },
   first_name: {
     type: DataTypes.STRING,
+    get() {
+      const value = this.getDataValue('first_name');
+
+      if (value) {
+        return value.substr(0, 25);
+      }
+
+      return null;
+    }
   },
   last_name: {
     type: DataTypes.STRING,
+    get() {
+      const value = this.getDataValue('last_name');
+
+      if (value) {
+        return value.substr(0, 25);
+      }
+
+      return null;
+    }
   },
   birthday: {
     type: DataTypes.STRING,
@@ -51,13 +68,15 @@ const User = sequelize.define('User', {
   created_at: {
     type: DataTypes.STRING,
     get() {
-      return `"${new Date(Date.parse(this.getDataValue('created_at'))).toLocaleString()}"`;
+      const value = new Date(Date.parse(this.getDataValue('created_at'))).toLocaleString();
+      return value === 'Invalid Date' ? null : value;
     }
   },
   updated_at: {
     type: DataTypes.STRING,
     get() {
-      return `"${new Date(Date.parse(this.getDataValue('updated_at'))).toLocaleString()}"`;
+      const value = new Date(Date.parse(this.getDataValue('updated_at'))).toLocaleString();
+      return value === 'Invalid Date' ? null : value;
     }
   },
 }, {
@@ -65,7 +84,9 @@ const User = sequelize.define('User', {
   timestamps: false,
 });
 
-/*User.hasOne(MediaBind, {foreignKey: 'avatar', sourceKey: 'media_id'});
-User.hasOne(Media, {foreignKey: 'id', sourceKey: 'user_id'});*/
+User.belongsTo(MediaBind, {
+  foreignKey: 'avatar',
+  sourceKey: 'module_id',
+});
 
 module.exports = User;

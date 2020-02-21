@@ -1,19 +1,19 @@
 const sqlMigrator = require('../../utils/sql-migrator');
-const Travel = require('./Travel');
+const User = require('./models/User');
 
-let limit = 300, offset = 0;
+let limit = 500, offset = 0;
 
 function run() {
-  Travel
+  User
     .findAll({
-      where: {
-        deleted_at: null,
-      },
+      order: [
+        ['id', 'ASC'],
+      ],
       offset,
       limit,
     })
-    .then(travels => {
-      sqlMigrator(travels, 'travels');
+    .then(users => {
+      sqlMigrator(users, 'users');
 
       offset += limit;
 

@@ -5,11 +5,25 @@ module.exports = sequelize.define('Travel', {
     type: DataTypes.INTEGER,
     primaryKey: true,
   },
+  owner_id: {
+    type: DataTypes.INTEGER,
+    field: 'user_id',
+  },
   title: {
     type: DataTypes.STRING,
   },
-  wysiwyg: {
+  text: {
     type: DataTypes.STRING,
+    field: 'wysiwyg',
+  },
+  budget: {
+    type: DataTypes.INTEGER,
+  },
+  date_start: {
+    type: DataTypes.DATE,
+  },
+  date_end: {
+    type: DataTypes.DATE,
   },
 }, {
   tableName: 'travels',

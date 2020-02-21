@@ -9,11 +9,10 @@ module.exports = {
   /*
     Откуда качаем изображения
    */
-  downloadUrl: 'http://192.168.2.220/storage',
+  downloadUrl: 'http://192.168.2.220:5000/storage',
 
   paths: {
-    images: path.resolve(__dirname, './_dump/images'),
-    sql: path.resolve(__dirname, './_dump/sql'),
+    saveTo: path.resolve(__dirname, './_dump'),
   },
 
   /*

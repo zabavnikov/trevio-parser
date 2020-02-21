@@ -1,7 +1,8 @@
 {
   "scripts": {
-    "users": "node ./modules/users/bin/index.js",
-    "users-avatars": "node ./modules/users/bin/avatars.js",
+    "users": "node ./modules/users/index.js",
+    "users-avatars": "node ./modules/users/avatars.js",
+    "travels": "node ./modules/travels/_index.js",
     "notes": "node ./modules/notes/_index.js"
   },
   "dependencies": {

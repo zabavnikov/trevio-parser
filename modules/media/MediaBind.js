@@ -13,11 +13,14 @@ const MediaBind = sequelize.define('MediaBind', {
   module_type_id: {
     type: DataTypes.INTEGER,
   },
+  tag: {
+    type: DataTypes.STRING,
+  },
 }, {
   tableName: 'media_bind',
   timestamps: false,
 });
 
-MediaBind.hasOne(Media, {foreignKey: 'avatar', sourceKey: 'media_id'});
+MediaBind.belongsTo(Media, {foreignKey: 'media_id', sourceKey: 'id'});
 
 module.exports = MediaBind;
