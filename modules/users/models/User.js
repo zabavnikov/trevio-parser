@@ -24,19 +24,6 @@ const User = sequelize.define('User', {
   },
   avatar: {
     type: DataTypes.INTEGER,
-    get() {
-      const isExists = parseInt(this.getDataValue('avatar')) > 0;
-
-      if (isExists > 0) {
-        return [
-          md5(this.getDataValue('id')).substr(0, 8).match(/[a-z0-9]{2}/g).join('/'),
-          this.getDataValue('id'),
-          'avatar.jpg'
-        ].join('/');
-      }
-
-      return null;
-    }
   },
   first_name: {
     type: DataTypes.STRING,
