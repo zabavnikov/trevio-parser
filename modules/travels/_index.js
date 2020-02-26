@@ -6,9 +6,7 @@ let limit = 300, offset = 0;
 function run() {
   Travel
     .findAll({
-      where: {
-        deleted_at: null,
-      },
+      include: [{ all: true, nested: true }],
       offset,
       limit,
     })

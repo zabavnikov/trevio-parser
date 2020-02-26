@@ -82,6 +82,11 @@ const User = sequelize.define('User', {
 }, {
   tableName: 'users',
   timestamps: false,
+  defaultScope: {
+    where: {
+      confirmed: 1
+    }
+  },
 });
 
 User.belongsTo(Media, {

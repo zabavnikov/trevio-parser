@@ -1,6 +1,8 @@
-const { DataTypes, sequelize } = require('../../database');
+const { DataTypes, Sequelize, sequelize } = require('../../../database');
 
-module.exports = sequelize.define('Travel', {
+const User = require('../../users/models/User');
+
+const Travel = sequelize.define('Travel', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -39,6 +41,9 @@ module.exports = sequelize.define('Travel', {
       return value === 'Invalid Date' ? null : value;
     }
   },
+  deleted_at: {
+    type: DataTypes.DATE,
+  },
   published_at: {
     type: DataTypes.VIRTUAL,
     get() {
@@ -49,4 +54,19 @@ module.exports = sequelize.define('Travel', {
 }, {
   tableName: 'travels',
   timestamps: false,
+  defaultScope: {
+    where: {
+      deleted_at: null,
+      user_confirmed: Sequelize.where(Sequelize.col('User.confirmed'), {
+        [Sequelize.Op.eq]: 1
+      }),
+    },
+  },
 });
+
+Travel.belongsTo(User, {
+  foreignKey: 'user_id',
+  sourceKey: 'id',
+});
+
+module.exports = Travel;

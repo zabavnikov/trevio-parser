@@ -22,6 +22,10 @@ module.exports = function (items, moduleName, tableName = null) {
 };
 
 function normalizeFieldsOfModel(model) {
+  // Поля которые не должын попасть в запрос.
+  delete model['User'];
+  delete model['user_id'];
+
   forEach(model, (value, key) => {
     if (value === null) {
       model[key] = `${null}`;
@@ -31,7 +35,13 @@ function normalizeFieldsOfModel(model) {
           model[key] = value.substr(0, 1000);
         }
 
-        model[key] = `"${model[key].replace(new RegExp(/("|')/, 'gm'), '')}"`;
+        value = value.replace('<br>', ' ');
+        value = value.replace(new RegExp(/<\/[a-z]>/, 'gmi'), ' '); // Например: </p> заменяем на пробел.
+        value = value.replace(new RegExp(/(<([^>]+)>)/, 'gmi'), ''); // Удаляем остальные теги.
+        value = value.replace(new RegExp(/("|')/, 'gm'), ''); // Удаляем кавычки.
+        value = value.trim();
+
+        model[key] = `"${value}"`;
       }
     }
   });
