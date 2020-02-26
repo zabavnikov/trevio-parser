@@ -2,8 +2,9 @@
   "scripts": {
     "users": "node ./modules/users/index.js",
     "users-avatars": "node ./modules/users/avatars.js",
-    "travels": "node ./modules/travels/_index.js",
-    "notes": "node ./modules/notes/_index.js"
+    "travels": "node ./modules/travels/index.js",
+    "travels-covers": "node ./modules/travels/covers.js",
+    "notes": "node ./modules/notes/index.js"
   },
   "dependencies": {
     "lodash": "^4.17.15",
