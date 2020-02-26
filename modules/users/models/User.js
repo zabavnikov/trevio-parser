@@ -2,7 +2,7 @@ const md5 = require('md5');
 
 const { DataTypes, sequelize } = require('../../../database');
 
-const MediaBind = require('../../media/MediaBind');
+const Media = require('../../media/Media');
 
 const User = sequelize.define('User', {
   id: {
@@ -84,9 +84,9 @@ const User = sequelize.define('User', {
   timestamps: false,
 });
 
-User.belongsTo(MediaBind, {
+User.belongsTo(Media, {
   foreignKey: 'avatar',
-  sourceKey: 'module_id',
+  sourceKey: 'id',
 });
 
 module.exports = User;

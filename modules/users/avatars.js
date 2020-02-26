@@ -7,9 +7,9 @@ const md5 = require('md5'),
 
 const Op = Sequelize.Op;
 
-let limit = 10, offset = 0;
+let limit = 30, offset = 0;
 
-async function run() {
+function run() {
   User
     .findAll({
       include: [{ all: true, nested: true }],
@@ -17,30 +17,27 @@ async function run() {
         avatar: {
           [Op.gt]: 0
         },
-        tag: Sequelize.where(Sequelize.col('MediaBind.tag'), {
-          [Op.eq]: 'avatar'
-        })
       },
       offset,
       limit,
     })
-    .then(async users => {
+    .then(users => {
 
-      users.forEach(async user => {
-        if (user.MediaBind && user.MediaBind.Medium.filename) {
-          await _parser(user.id, user.MediaBind.Medium.filename);
+      users.forEach(user => {
+        if (user.Medium && user.Medium.filename) {
+          _parser(user.id, user.Medium.filename);
         }
       });
 
       offset += limit;
 
-      await run();
+      setTimeout(() => run(), 1000);
     });
 }
 
 run();
 
-async function _parser(userId, filename) {
+function _parser(userId, filename) {
   const filepath = [
     settings.downloadUrl,
     'media',
@@ -61,7 +58,7 @@ async function _parser(userId, filename) {
     fs.mkdirSync(output, {recursive: true});
   }
 
-  await request.get({
+  request.get({
     url: filepath,
     encoding: null,
   })

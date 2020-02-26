@@ -3,7 +3,7 @@ const { Sequelize, DataTypes } = require('sequelize');
 module.exports = {
   DataTypes,
   Sequelize,
-  sequelize: new Sequelize('123123', 'root', '', {
+  sequelize: new Sequelize('trevio', 'root', '', {
     host: 'localhost',
     dialect: 'mysql',
   }),
