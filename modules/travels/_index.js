@@ -1,5 +1,5 @@
 const sqlMigrator = require('../../utils/sql-migrator');
-const Travel = require('./Travel');
+const Travel = require('./models/Travel');
 
 let limit = 300, offset = 0;
 

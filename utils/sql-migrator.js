@@ -12,9 +12,6 @@ module.exports = function (items, moduleName, tableName = null) {
   forEach(items, item => {
     const normalize = normalizeFieldsOfModel(item.get());
 
-    // Удаляем чтобы колонка не попала в SQL.
-    // delete normalize['id'];
-
     fs.appendFile(
       file,
       `INSERT INTO ${tableName} (${Object.keys(normalize).join(', ')}) VALUES (${Object.values(normalize).join(', ')});\r\n`,
