@@ -27,9 +27,9 @@ function run() {
         ].join('/');
 
         // Парсим аватар.
-        /*if (user.avatar > 0) {
+        if (user.avatar > 0) {
           avatar = await download(user.Medium, 'users/avatars', path, 'avatar.jpg', 200, 200);
-        }*/
+        }
 
         await toSql({
           id: user.id,
