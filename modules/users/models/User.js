@@ -53,17 +53,29 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING,
   },
   created_at: {
-    type: DataTypes.STRING,
+    type: DataTypes.DATE,
     get() {
-      const value = new Date(Date.parse(this.getDataValue('created_at'))).toLocaleString();
-      return value === 'Invalid Date' ? null : value;
+      const date = this.getDataValue('created_at');
+
+      if (date) {
+        // Example: 2017-11-04 22:08:32
+        return new Date(Date.parse(date)).toISOString().replace('T', ' ').slice(0, 19);
+      }
+
+      return null;
     }
   },
   updated_at: {
-    type: DataTypes.STRING,
+    type: DataTypes.DATE,
     get() {
-      const value = new Date(Date.parse(this.getDataValue('updated_at'))).toLocaleString();
-      return value === 'Invalid Date' ? null : value;
+      const date = this.getDataValue('updated_at');
+
+      if (date) {
+        // Example: 2017-11-04 22:08:32
+        return new Date(Date.parse(date)).toISOString().replace('T', ' ').slice(0, 19);
+      }
+
+      return null;
     }
   },
 }, {
