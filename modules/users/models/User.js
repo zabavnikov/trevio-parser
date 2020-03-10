@@ -1,8 +1,7 @@
 const md5 = require('md5');
-
 const { DataTypes, sequelize } = require('../../../database');
-
 const Media = require('../../media/Media');
+const dateConverter = require('../../../utils/dateConverter');
 
 const User = sequelize.define('User', {
   id: {
@@ -59,7 +58,7 @@ const User = sequelize.define('User', {
 
       if (date) {
         // Example: 2017-11-04 22:08:32
-        return new Date(Date.parse(date)).toISOString().replace('T', ' ').slice(0, 19);
+        return dateConverter(date);
       }
 
       return null;
@@ -72,7 +71,7 @@ const User = sequelize.define('User', {
 
       if (date) {
         // Example: 2017-11-04 22:08:32
-        return new Date(Date.parse(date)).toISOString().replace('T', ' ').slice(0, 19);
+        return dateConverter(date);
       }
 
       return null;
