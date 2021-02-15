@@ -3,7 +3,7 @@ const download = require('../../utils/download');
 const toSql = require('../../utils/toSql');
 const User = require('./models/User');
 
-let limit = 50, offset = 0;
+let limit = 200, offset = 0;
 
 function run() {
   User
@@ -27,18 +27,17 @@ function run() {
         ].join('/');
 
         // Парсим аватар.
-        if (user.avatar > 0) {
+        /*if (user.avatar > 0) {
           avatar = await download(user.Medium, 'users/avatars', path, 'avatar.jpg', 200, 200);
-        }
+        }*/
 
         await toSql({
           id: user.id,
-          name: user.name,
+          username: user.name,
           email: user.email,
           password: user.password,
+          name: user.first_name + ' ' + user.last_name,
           description: user.description,
-          first_name: user.first_name,
-          last_name: user.last_name,
           birthday: user.birthday,
           created_at: user.created_at,
           updated_at: user.updated_at,

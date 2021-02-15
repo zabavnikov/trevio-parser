@@ -18,6 +18,15 @@ const Travel = sequelize.define('Travel', {
   text: {
     type: DataTypes.STRING,
     field: 'wysiwyg',
+    get() {
+      const value = this.getDataValue('text');
+
+      if (value) {
+        return value.trim().substr(0, 400);
+      }
+
+      return null;
+    }
   },
   budget: {
     type: DataTypes.INTEGER,
