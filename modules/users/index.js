@@ -35,7 +35,7 @@ function run() {
 
         const insert = {
           id: user.id,
-          username: `${user.id}-${user.name}`.substr(0, 20),
+          username: user.username,
           email: user.email,
           password: user.password,
           description: user.description,

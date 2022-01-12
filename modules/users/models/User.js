@@ -1,4 +1,3 @@
-const md5 = require('md5');
 const { DataTypes, sequelize } = require('../../../database');
 const Media = require('../../media/Media');
 const dateConverter = require('../../../utils/dateConverter');
@@ -8,9 +7,15 @@ const User = sequelize.define('User', {
     type: DataTypes.INTEGER,
     primaryKey: true,
   },
-  name: {
+  username: {
     type: DataTypes.STRING,
     field: 'nickname',
+    get() {
+      const id        = this.getDataValue('id');
+      const username  = this.getDataValue('username');
+
+      return `${id}-${username}`.substr(0, 20);
+    }
   },
   email: {
     type: DataTypes.STRING,
