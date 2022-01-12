@@ -16,6 +16,10 @@ function run() {
       limit,
     })
     .then(async users => {
+      if (users.length === 0) {
+        return;
+      }
+
       for await (let user of users) {
         user = user.get();
 
@@ -31,18 +35,36 @@ function run() {
           avatar = await download(user.Medium, 'users/avatars', path, 'avatar.jpg', 200, 200);
         }*/
 
-        await toSql({
+        const insert = {
           id: user.id,
-          username: user.name,
+          username: `${user.id}-${user.name}`.substr(0, 20),
           email: user.email,
           password: user.password,
-          name: user.first_name + ' ' + user.last_name,
           description: user.description,
           birthday: user.birthday,
+          email_verified_at: user.confirmed
+              ? user.created_at
+              : null,
           created_at: user.created_at,
           updated_at: user.updated_at,
           avatar: avatar,
-        }, 'users');
+        }
+
+        let name = '';
+
+        if (user.first_name !== null) {
+          name += user.first_name;
+        }
+
+        if (user.last_name !== null) {
+          name += ' ' + user.last_name;
+        }
+
+        if (name.length) {
+          insert.name = name;
+        }
+
+        await toSql(insert, 'users');
       }
 
       offset += limit;

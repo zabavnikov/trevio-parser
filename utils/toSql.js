@@ -10,9 +10,7 @@ const forEach = require('lodash/forEach');
  */
 function normalize(fields) {
   forEach(fields, (value, key) => {
-    if (value === null) {
-      fields[key] = `${null}`;
-    } else {
+    if (value !== null) {
       if (typeof value === 'string') {
         if (value.length > 1000) {
           fields[key] = value.substr(0, 1000);
@@ -26,6 +24,8 @@ function normalize(fields) {
 
         fields[key] = `"${value}"`;
       }
+    } else {
+      fields[key] = `NULL`;
     }
   });
 

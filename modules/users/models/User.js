@@ -60,6 +60,9 @@ const User = sequelize.define('User', {
   birthday: {
     type: DataTypes.STRING,
   },
+  confirmed: {
+    type: DataTypes.INTEGER,
+  },
   created_at: {
     type: DataTypes.DATE,
     get() {
