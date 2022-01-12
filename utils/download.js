@@ -12,7 +12,7 @@ const sharp = require('sharp');
  */
 const _getUrlOfOriginalImage = filename => {
   return [
-    'http://192.168.2.220:5000/storage/media',
+    'https://trevio.ru/storage/media',
     filename.substr(0, 1),
     filename.substr(1, 2),
     filename.substr(3, 2),

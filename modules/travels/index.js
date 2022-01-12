@@ -13,6 +13,10 @@ function run() {
       limit,
     })
     .then(async travels => {
+      if (travels.length === 0) {
+        return
+      }
+
       for await (let travel of travels) {
         travel = travel.get();
 
@@ -21,28 +25,31 @@ function run() {
 
         await toSql({
           id: travel.id,
-          owner_id: travel.owner_id,
+          user_id: travel.user_id,
           title: travel.title,
           text: travel.text,
           budget: travel.budget,
           date_start: travel.date_start,
           date_end: travel.date_end,
+          is_draft: travel.status === 'draw',
           created_at: travel.created_at,
           updated_at: travel.updated_at,
+          deleted_at: travel.deleted_at,
           published_at: travel.published_at,
         }, 'travels')
 
         await toSql({
-          key: `emitter${travel.owner_id}travels${travel.id}`,
+          key: `emitter${travel.user_id}travels${travel.id}`,
           event_id: 1,
-          emitter_id: travel.owner_id,
-          recipient_id: travel.owner_id,
+          emitter_id: travel.user_id,
+          recipient_id: travel.user_id,
           travel_id: travel.id,
           model_type: 'travels',
           model_id: travel.id,
+          ip: 1,
           weight: 0.0120,
           created_at: travel.created_at,
-        }, 'travels-activity')
+        }, 'travels', 'activity')
 
         //if (cover) {
           //await download(cover, 'travels/images', path, travel.id + '_cover.jpg', 1920, 1080);

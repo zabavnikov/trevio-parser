@@ -23,8 +23,6 @@ function run() {
       for await (let user of users) {
         user = user.get();
 
-        let avatar = null;
-
         const path = [
           md5(user.id).substr(0, 8).match(/[a-z0-9]{2}/g).join('/'),
           user.id,
@@ -32,7 +30,7 @@ function run() {
 
         // Парсим аватар.
         /*if (user.avatar > 0) {
-          avatar = await download(user.Medium, 'users/avatars', path, 'avatar.jpg', 200, 200);
+          await download(user.Medium, 'users/avatars', path, 'avatar.jpg', 200, 200);
         }*/
 
         const insert = {
@@ -47,7 +45,7 @@ function run() {
               : null,
           created_at: user.created_at,
           updated_at: user.updated_at,
-          avatar: avatar,
+          avatar: `/users/${path}/avatar.jpg`,
         }
 
         let name = '';

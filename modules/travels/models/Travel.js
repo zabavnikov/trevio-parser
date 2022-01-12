@@ -8,9 +8,8 @@ const Travel = sequelize.define('Travel', {
     type: DataTypes.INTEGER,
     primaryKey: true,
   },
-  owner_id: {
+  user_id: {
     type: DataTypes.INTEGER,
-    field: 'user_id',
   },
   title: {
     type: DataTypes.STRING,
@@ -27,6 +26,9 @@ const Travel = sequelize.define('Travel', {
 
       return null;
     }
+  },
+  status: {
+    type: DataTypes.STRING,
   },
   budget: {
     type: DataTypes.INTEGER,
