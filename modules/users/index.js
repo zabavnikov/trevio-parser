@@ -40,9 +40,11 @@ function run() {
           password: user.password,
           description: user.description,
           birthday: user.birthday,
+          gender: user.sex,
           email_verified_at: user.confirmed
               ? user.created_at
               : null,
+          last_activity_at: user.last_activity,
           created_at: user.created_at,
           updated_at: user.updated_at,
           avatar: `/users/${path}/avatar.jpg`,

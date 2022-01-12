@@ -60,8 +60,24 @@ const User = sequelize.define('User', {
   birthday: {
     type: DataTypes.STRING,
   },
+  sex: {
+    type: DataTypes.STRING,
+  },
   confirmed: {
     type: DataTypes.INTEGER,
+  },
+  last_activity: {
+    type: DataTypes.DATE,
+    get() {
+      const date = this.getDataValue('created_at');
+
+      if (date) {
+        // Example: 2017-11-04 22:08:32
+        return dateConverter(date);
+      }
+
+      return null;
+    }
   },
   created_at: {
     type: DataTypes.DATE,
