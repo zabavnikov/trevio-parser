@@ -1,6 +1,7 @@
 const toSql = require('../../utils/toSql');
 const download = require('../../utils/download');
 const { uploadDirForPermanentImages, dateToPath } = require('../../utils/pathBuilder');
+const { UPLOAD_DISK } = require('../../constants');
 const Travel = require('./models/Travel');
 
 let limit = 20, offset = 0;
@@ -19,11 +20,6 @@ function run() {
 
       for await (let travel of travels) {
         travel = travel.get();
-
-        const path = uploadDirForPermanentImages(travel.user_id);
-        const cover = travel.MediaBind
-            ? travel.MediaBind.Medium
-            : null;
 
         await toSql({
           id: travel.id,
@@ -53,16 +49,27 @@ function run() {
           created_at: travel.created_at,
         }, 'travels', 'activity')
 
-        await toSql({
-          user_id: travel.user_id,
-          model_id: travel.id,
-          disk: 'public',
-          path: `users/${path}/travels/${dateToPath(travel.created_at)}`
-        }, 'travels', 'travels_images')
 
-        /*if (cover) {
-          await download(cover, 'travels/images', path, 'cover.jpg', 1920, 1080);
-        }*/
+        /*
+         * Обложки путешествий.
+         */
+        const path = uploadDirForPermanentImages(travel.user_id);
+        const fullPath = `users/${path}/travels/${dateToPath(travel.created_at)}`;
+        const cover = travel.MediaBind
+            ? travel.MediaBind.Medium
+            : null;
+        const filename = 'cover.jpg';
+
+        if (cover) {
+          await toSql({
+            user_id: travel.user_id,
+            model_id: travel.id,
+            disk: 'public',
+            path: fullPath + '/' + filename,
+          }, 'travels', 'travels_images')
+
+          await download('travels', cover, UPLOAD_DISK, fullPath, filename, 1920, 1080);
+        }
       }
 
       offset += limit;

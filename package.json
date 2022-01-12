@@ -2,7 +2,6 @@
   "scripts": {
     "users": "node ./modules/users/index.js",
     "travels": "node ./modules/travels/index.js",
-    "travels-covers": "node ./modules/travels/covers.js",
     "notes": "node ./modules/notes/index.js"
   },
   "dependencies": {

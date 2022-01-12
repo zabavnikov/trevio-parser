@@ -24,6 +24,7 @@ const _getUrlOfOriginalImage = filename => {
  *
  * Сохраняем оригинальное изображение по указанному пути.
  *
+ * @param moduleName
  * @param file
  * @param disk
  * @param path
@@ -33,7 +34,7 @@ const _getUrlOfOriginalImage = filename => {
  *
  * @returns {Promise<{filepath: string}>}
  */
-module.exports = async (file, disk, path, filename = false, width = null, height = null) => {
+module.exports = async (moduleName, file, disk, path, filename = false, width = null, height = null) => {
 
   // Если не указаном имя изображения, то берем название оригинального изображения.
   if (! filename) {
@@ -44,7 +45,7 @@ module.exports = async (file, disk, path, filename = false, width = null, height
     filename += '.jpg';
   }
 
-  const outputDir = [nodePath.resolve(__dirname, '../_dump'), disk, path].join('/');
+  const outputDir = [nodePath.resolve(__dirname, `../modules/${moduleName}/dump/images`), disk, path].join('/');
 
   if (! fs.existsSync(outputDir)) {
     fs.mkdirSync(outputDir, {recursive: true});
