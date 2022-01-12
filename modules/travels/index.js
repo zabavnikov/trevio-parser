@@ -1,6 +1,6 @@
 const toSql = require('../../utils/toSql');
 const download = require('../../utils/download');
-const { uploadDirForPermanentImages } = require('../../utils/pathBuilder');
+const { uploadDirForPermanentImages, dateToPath } = require('../../utils/pathBuilder');
 const Travel = require('./models/Travel');
 
 let limit = 20, offset = 0;
@@ -20,8 +20,10 @@ function run() {
       for await (let travel of travels) {
         travel = travel.get();
 
-        //const path = uploadDirForPermanentImages(travel.id);
-        //const cover = travel.MediaBind ? travel.MediaBind.Medium : null;
+        const path = uploadDirForPermanentImages(travel.user_id);
+        const cover = travel.MediaBind
+            ? travel.MediaBind.Medium
+            : null;
 
         await toSql({
           id: travel.id,
@@ -51,9 +53,16 @@ function run() {
           created_at: travel.created_at,
         }, 'travels', 'activity')
 
-        //if (cover) {
-          //await download(cover, 'travels/images', path, travel.id + '_cover.jpg', 1920, 1080);
-        //}
+        await toSql({
+          user_id: travel.user_id,
+          model_id: travel.id,
+          disk: 'public',
+          path: `users/${path}/travels/${dateToPath(travel.created_at)}`
+        }, 'travels', 'travels_images')
+
+        /*if (cover) {
+          await download(cover, 'travels/images', path, 'cover.jpg', 1920, 1080);
+        }*/
       }
 
       offset += limit;
