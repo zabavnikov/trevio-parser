@@ -1,6 +1,8 @@
-const { DataTypes, sequelize } = require('../../../database');
+const { DataTypes, Sequelize, sequelize } = require('../../../database');
+const { dateFields } = require('../../../utils/modelFieldset');
+const User = require('../../users/models/User');
 
-module.exports = sequelize.define('Note', {
+const Note = sequelize.define('Note', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -14,30 +16,42 @@ module.exports = sequelize.define('Note', {
   note_type_id: {
     type: DataTypes.INTEGER,
   },
-  company_id: {
-    type: DataTypes.INTEGER,
-  },
   title: {
     type: DataTypes.STRING,
   },
-  short_text: {
+  text: {
     type: DataTypes.STRING,
-  },
-  wysiwyg: {
-    type: DataTypes.STRING,
+    field: 'wysiwyg',
   },
   message_count: {
     type: DataTypes.INTEGER,
   },
-  createdAt: {
-    type: DataTypes.DATE,
-    field: 'created_at',
-  },
-  updatedAt: {
-    type: DataTypes.DATE,
-    field: 'created_at',
-  },
+  ...dateFields,
 }, {
   tableName: 'notes',
   timestamps: false,
+  defaultScope: {
+    where: {
+      status: 'published',
+      deleted_at: null,
+      user_confirmed: Sequelize.where(Sequelize.col('User.confirmed'), {
+        [Sequelize.Op.eq]: 1
+      }),
+    },
+  },
 });
+
+Note.belongsTo(User, {
+  foreignKey: 'user_id',
+});
+
+/*
+Note.hasOne(MediaBind, {
+  foreignKey: 'module_id',
+  scope: {
+    module_type_id: 1,
+    tag: 'cover',
+  },
+});*/
+
+module.exports = Note;

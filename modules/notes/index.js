@@ -1,69 +1,81 @@
-const fs = require('fs');
-const Note = require('./Note');
-const Parser = require('../../Parser');
-const settings = require('../../settings');
-const {normalizeData} = require('../../helpers');
-const forEach = require('lodash/forEach');
+const toSql = require('../../utils/toSql');
+const download = require('../../utils/download');
+const { uploadDirForPermanentImages, dateToPath } = require('../../utils/pathBuilder');
+const { UPLOAD_DISK } = require('../../constants');
+const { v4 } = require('uuid');
+const Note = require('./models/Note');
 
-const outputImages = [], schema = {
-  user_id: 'owner_id',
-  travel_id: 'travel_id',
-  note_type_id: 'category_id',
-  company_id: 'company_id',
-  title: 'title',
-  short_text: 'short_text',
-  wysiwyg: 'text',
-  message_count: 'comments_count',
-  createdAt: 'created_at',
-  updatedAt: 'updated_at',
-};
+let limit = 50,
+    offset = 0,
+    moduleName = 'notes';
 
-let limit = 1, offset = 0;
-
-function notes() {
-  if (offset >= 5) {
-    return;
-  }
-
+function run() {
   Note
-    .findAll({offset, limit})
-    .then(items => {
-      forEach(items, item => {
-        const parser = new Parser(item, 'notes');
+      .findAll({
+        include: { all: true, nested: true },
+        offset,
+        limit,
+      })
+      .then(async notes => {
+        if (notes.length === 0) {
+          return
+        }
 
-        /*
-          Вернет item с обновленныйм полем wysiwyg.
-         */
-        item = parser.getModel();
+        for await (let note of notes) {
+          note = note.get();
 
-        /*
-          Заполняем новые поля данными из старых полей.
-          normalizeData вернет набор полей уже подготовленных для вставки.
-         */
-        fs.appendFile(
-          settings.paths.sql + '/notes/notes.sql',
-          `INSERT INTO notes (${Object.values(schema).join(', ')}) VALUES (${normalizeData(item, schema).join(', ')});\r\n`,
-          function (error) {
-            if (error) return console.log(error);
-          });
+          await toSql({
+            id: note.id,
+            user_id: note.user_id,
+            travel_id: note.travel_id,
+            title: note.title,
+            text: note.text,
+            created_at: note.created_at,
+            updated_at: note.updated_at,
+            deleted_at: note.deleted_at,
+            published_at: note.published_at,
+          }, moduleName)
 
-        /*
-          Генерируем SQL файл для изображений.
-         */
-        forEach(parser.getImages(), image => {
-          fs.appendFile(
-            settings.paths.sql + '/notes/images.sql',
-            `INSERT INTO notes_images (${Object.keys(image).join(', ')}) VALUES (${Object.values(image).join(', ')});\r\n`,
-            function (error) {
-              if (error) return console.log(error);
-            });
-        });
+          await toSql({
+            key: `emitter${note.user_id}${moduleName}${note.id}`,
+            event_id: 1,
+            emitter_id: note.user_id,
+            recipient_id: note.user_id,
+            travel_id: note.id,
+            model_type: moduleName,
+            model_id: note.id,
+            ip: 1,
+            weight: 0.0120,
+            created_at: note.created_at,
+          }, moduleName, 'activity')
+
+
+          /*
+           * Обложки путешествий.
+           */
+          /*const path = uploadDirForPermanentImages(note.user_id);
+          const fullPath = `users/${path}/travels/${dateToPath(note.created_at)}`;
+          const cover = note.MediaBind
+              ? note.MediaBind.Medium
+              : null;
+          const filename = `cover-${note.id}.jpg`;
+
+          if (cover) {
+            await toSql({
+              user_id: note.user_id,
+              model_id: note.id,
+              disk: UPLOAD_DISK,
+              path: fullPath + '/' + filename,
+            }, 'travels', 'travels_images')
+
+            await download('travels', cover, UPLOAD_DISK, fullPath, filename, 1024, 768);
+          }*/
+        }
+
+        offset += limit;
+
+        setTimeout(() => run(), 1000);
       });
-
-      offset += limit;
-
-      setTimeout(() => notes(), 1000);
-    });
 }
 
-notes();
+run();

@@ -21,9 +21,6 @@ function run() {
           QuestionsCount
         ]
       },
-      where: {
-        status: 'published',
-      },
       include: { all: true, nested: true },
       offset,
       limit,
@@ -54,7 +51,7 @@ function run() {
           published_at: travel.published_at,
         }, 'travels')
 
-        await toSql({
+        /*await toSql({
           key: `emitter${travel.user_id}travels${travel.id}`,
           event_id: 1,
           emitter_id: travel.user_id,
@@ -65,13 +62,13 @@ function run() {
           ip: 1,
           weight: 0.0120,
           created_at: travel.created_at,
-        }, 'travels', 'activity')
+        }, 'travels', 'activity')*/
 
 
         /*
          * Обложки путешествий.
          */
-        const path = uploadDirForPermanentImages(travel.user_id);
+        /*const path = uploadDirForPermanentImages(travel.user_id);
         const fullPath = `users/${path}/travels/${dateToPath(travel.created_at)}`;
         const cover = travel.MediaBind
             ? travel.MediaBind.Medium
@@ -87,7 +84,7 @@ function run() {
           }, 'travels', 'travels_images')
 
           await download('travels', cover, UPLOAD_DISK, fullPath, filename, 1024, 768);
-        }
+        }*/
       }
 
       offset += limit;
