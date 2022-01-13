@@ -2,9 +2,11 @@ const toSql = require('../../utils/toSql');
 const download = require('../../utils/download');
 const { uploadDirForPermanentImages, dateToPath } = require('../../utils/pathBuilder');
 const { UPLOAD_DISK } = require('../../constants');
-const { v4 } = require('uuid');
 const Note = require('./models/Note');
-const SQL = require('../../classes/SQL')
+const SQL = require('../../classes/SQL');
+const { v4 } = require('uuid');
+const jsdom = require("jsdom");
+const { JSDOM } = jsdom;
 
 let limit = 50,
     offset = 0,
@@ -24,6 +26,17 @@ function run() {
 
         for await (let note of notes) {
           note = note.get();
+
+          const dom = new JSDOM(note.text);
+          const img = dom.window.document.querySelectorAll("img");
+
+          img.forEach(i => {
+            i.tagName = 'ce-image'
+          })
+
+          console.log(dom.serialize())
+
+          return;
 
           await new SQL('notes', {
             id: note.id,

@@ -5,6 +5,7 @@
     "notes": "node ./modules/notes/index.js"
   },
   "dependencies": {
+    "jsdom": "^19.0.0",
     "lodash": "^4.17.21",
     "md5": "^2.3.0",
     "mysql2": "^2.3.3",
