@@ -8,7 +8,7 @@ const forEach = require('lodash/forEach');
  * @param fields
  * @returns {*}
  */
-function normalize(fields) {
+function normalize(fields, htmlFields = []) {
   forEach(fields, (value, key) => {
     if (value !== null) {
       if (typeof value === 'string') {
@@ -16,9 +16,12 @@ function normalize(fields) {
           fields[key] = value.substr(0, 1000);
         }
 
-        value = value.replace('<br>', ' ');
-        value = value.replace(new RegExp(/<\/[a-z]>/, 'gmi'), ' '); // Например: </p> заменяем на пробел.
-        value = value.replace(new RegExp(/(<([^>]+)>)/, 'gmi'), ''); // Удаляем остальные теги.
+        if (! htmlFields.indexOf(key) >= 0) {
+          value = value.replace('<br>', ' ');
+          value = value.replace(new RegExp(/<\/[a-z]>/, 'gmi'), ' '); // Например: </p> заменяем на пробел.
+          value = value.replace(new RegExp(/(<([^>]+)>)/, 'gmi'), ''); // Удаляем остальные теги.
+        }
+
         value = value.replace(new RegExp(/("|')/, 'gm'), ''); // Удаляем кавычки.
         value = value.trim();
 
@@ -32,14 +35,14 @@ function normalize(fields) {
   return fields;
 }
 
-module.exports = async function (fields, moduleName, tableName = null) {
+module.exports = async function (fields, moduleName, tableName = null, htmlFields = []) {
   if (tableName === null) {
     tableName = moduleName;
   }
 
   const file = `${path.resolve(__dirname, `../modules/${moduleName}`)}/dump/${tableName}.sql`;
 
-  fields = normalize(fields);
+  fields = normalize(fields, htmlFields);
 
   if (! await fs.existsSync(file)) {
     await fs.writeFileSync(file, '');

@@ -4,6 +4,7 @@ const { uploadDirForPermanentImages, dateToPath } = require('../../utils/pathBui
 const { UPLOAD_DISK } = require('../../constants');
 const { v4 } = require('uuid');
 const Note = require('./models/Note');
+const SQL = require('../../classes/SQL')
 
 let limit = 50,
     offset = 0,
@@ -24,19 +25,33 @@ function run() {
         for await (let note of notes) {
           note = note.get();
 
-          await toSql({
+          await new SQL('notes', {
             id: note.id,
             user_id: note.user_id,
             travel_id: note.travel_id,
             title: note.title,
-            text: note.text,
+            text: `<p>${note.short_text}</p>${note.text}`,
             created_at: note.created_at,
             updated_at: note.updated_at,
             deleted_at: note.deleted_at,
             published_at: note.published_at,
-          }, moduleName)
+          })
+          .setHtmlFields(['text'])
+          .parse()
 
-          await toSql({
+          /*await toSql({
+            id: note.id,
+            user_id: note.user_id,
+            travel_id: note.travel_id,
+            title: note.title,
+            text: `<p>${note.short_text}</p>${note.text}`,
+            created_at: note.created_at,
+            updated_at: note.updated_at,
+            deleted_at: note.deleted_at,
+            published_at: note.published_at,
+          }, moduleName, ['text'])*/
+
+          /*await toSql({
             key: `emitter${note.user_id}${moduleName}${note.id}`,
             event_id: 1,
             emitter_id: note.user_id,
@@ -47,7 +62,7 @@ function run() {
             ip: 1,
             weight: 0.0120,
             created_at: note.created_at,
-          }, moduleName, 'activity')
+          }, moduleName, 'activity')*/
 
 
           /*

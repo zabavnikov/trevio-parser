@@ -19,8 +19,11 @@ const Note = sequelize.define('Note', {
   title: {
     type: DataTypes.STRING,
   },
-  text: {
+  short_text: {
     type: DataTypes.STRING,
+  },
+  text: {
+    type: DataTypes.TEXT,
     field: 'wysiwyg',
   },
   message_count: {
