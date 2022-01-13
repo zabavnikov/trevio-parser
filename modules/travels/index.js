@@ -3,12 +3,19 @@ const download = require('../../utils/download');
 const { uploadDirForPermanentImages, dateToPath } = require('../../utils/pathBuilder');
 const { UPLOAD_DISK } = require('../../constants');
 const Travel = require('./models/Travel');
+const { v4 } = require('uuid');
+const { Op } = require('sequelize');
 
 let limit = 20, offset = 0;
 
 function run() {
   Travel
     .findAll({
+      where: {
+        status: {
+          [Op.notIn]: ['unpublished', 'moderation'],
+        },
+      },
       include: [{ all: true, nested: true }],
       offset,
       limit,
@@ -29,7 +36,6 @@ function run() {
           budget: travel.budget,
           date_start: travel.date_start,
           date_end: travel.date_end,
-          is_draft: travel.status === 'draw',
           created_at: travel.created_at,
           updated_at: travel.updated_at,
           deleted_at: travel.deleted_at,
@@ -58,7 +64,7 @@ function run() {
         const cover = travel.MediaBind
             ? travel.MediaBind.Medium
             : null;
-        const filename = 'cover.jpg';
+        const filename = `${v4()}.jpg`;
 
         if (cover) {
           await toSql({
