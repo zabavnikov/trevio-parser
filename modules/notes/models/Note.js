@@ -1,4 +1,4 @@
-const { DataTypes, sequelize } = require('../../database');
+const { DataTypes, sequelize } = require('../../../database');
 
 module.exports = sequelize.define('Note', {
   id: {
