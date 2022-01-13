@@ -1,7 +1,9 @@
 const md5 = require('md5');
 const download = require('../../utils/download');
 const toSql = require('../../utils/toSql');
+const { uploadDirForPermanentImages, dateToPath } = require('../../utils/pathBuilder');
 const User = require('./models/User');
+const { UPLOAD_DISK } = require('../../constants');
 
 let limit = 200, offset = 0;
 
@@ -23,15 +25,12 @@ function run() {
       for await (let user of users) {
         user = user.get();
 
-        const path = [
-          md5(user.id).substr(0, 8).match(/[a-z0-9]{2}/g).join('/'),
-          user.id,
-        ].join('/');
+        const path = uploadDirForPermanentImages(user.id);
 
         // Парсим аватар.
-        /*if (user.avatar > 0) {
-          await download(user.Medium, 'users/avatars', path, 'avatar.jpg', 200, 200);
-        }*/
+        if (user.avatar > 0) {
+          await download('users', user.Medium, UPLOAD_DISK, path, 'avatar.jpg', 200, 200);
+        }
 
         const insert = {
           id: user.id,

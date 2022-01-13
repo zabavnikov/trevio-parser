@@ -64,11 +64,11 @@ function run() {
           await toSql({
             user_id: travel.user_id,
             model_id: travel.id,
-            disk: 'public',
+            disk: UPLOAD_DISK,
             path: fullPath + '/' + filename,
           }, 'travels', 'travels_images')
 
-          await download('travels', cover, UPLOAD_DISK, fullPath, filename, 1920, 1080);
+          await download('travels', cover, UPLOAD_DISK, fullPath, filename, 1024, 768);
         }
       }
 
