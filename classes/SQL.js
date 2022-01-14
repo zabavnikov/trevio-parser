@@ -7,6 +7,7 @@ class SQL {
     this.tableName  = tableName;
     this.fields     = fields;
     this.htmlFields = [];
+    this.folder     = tableName;
   }
 
   setHtmlFields(htmlFields = []) {
@@ -14,6 +15,15 @@ class SQL {
       this.htmlFields = htmlFields;
     }
 
+    return this;
+  }
+
+  /**
+   * @param folder
+   * @returns {SQL}
+   */
+  setDumpFolder(folder) {
+    this.folder = folder;
     return this;
   }
 
@@ -51,7 +61,7 @@ class SQL {
    *
    */
   async parse() {
-    const file = `${path.resolve(__dirname, `../modules/${this.tableName}`)}/dump/${this.tableName}.sql`;
+    const file = `${path.resolve(__dirname, `../modules/${this.folder}`)}/dump/${this.tableName}.sql`;
 
     this.fields = this._normalize(this.fields);
 

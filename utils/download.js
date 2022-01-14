@@ -1,4 +1,6 @@
-const fs = require('fs');
+const fs = require('fs').promises;
+const { existsSync } = require('fs');
+
 const nodePath = require('path');
 const request = require('request-promise');
 const sharp = require('sharp');
@@ -12,12 +14,12 @@ const sharp = require('sharp');
  */
 const _getUrlOfOriginalImage = filename => {
   return [
-    'https://trevio.ru/storage/media',
+    '/mnt/e/treivo-images/webserver/public_html/shared/storage/app/public/media',
     filename.substr(0, 1),
     filename.substr(1, 2),
     filename.substr(3, 2),
     filename,
-  ].join('/')
+  ].join('/');
 };
 
 /**
@@ -28,30 +30,59 @@ const _getUrlOfOriginalImage = filename => {
  * @param file
  * @param disk
  * @param path
- * @param filename
+ * @param outputFilename
  * @param width
  * @param height
  *
  * @returns {Promise<{filepath: string}>}
  */
-module.exports = async (moduleName, file, disk, path, filename = false, width = null, height = null) => {
+module.exports = async (moduleName, file, disk, path, outputFilename = false, width = null, height = null) => {
 
   // Если не указаном имя изображения, то берем название оригинального изображения.
-  if (! filename) {
-    filename = file.filename;
+  if (! outputFilename) {
+    outputFilename = file.filename;
   }
 
-  if (! /\./.test(filename)) {
-    filename += '.jpg';
+  if (! /\./.test(outputFilename)) {
+    outputFilename += '.jpg';
   }
 
   const outputDir = [nodePath.resolve(__dirname, `../modules/${moduleName}/dump/images`), disk, path].join('/');
 
-  if (! fs.existsSync(outputDir)) {
-    fs.mkdirSync(outputDir, {recursive: true});
+  if (! existsSync(outputDir)) {
+    await fs.mkdir(outputDir, {
+      recursive: true
+    });
   }
 
-  await request
+  let response = await fs.readFile(_getUrlOfOriginalImage(file.filename));
+
+  const output = `${outputDir + '/' + outputFilename}`;
+
+  if (width || height) {
+    response = await sharp(response)
+        .resize(width, height, {
+          withoutEnlargement: true
+        })
+        .removeAlpha()
+        .toBuffer();
+  }
+
+  await fs.writeFile(output, response, 'base64');
+
+    /*if (width || height) {
+      await sharp(buffer)
+          .resize(width, height, {
+            withoutEnlargement: true
+          })
+          .removeAlpha();
+    } else {
+      await fs.writeFile(output, 'test.txt', error => {
+        if (error) throw error;
+      });
+    }*/
+
+  /*await request
     .get({url: _getUrlOfOriginalImage(file.filename), encoding: null})
     .then(response => {
       const output = `${outputDir + '/' + filename}`;
@@ -70,7 +101,7 @@ module.exports = async (moduleName, file, disk, path, filename = false, width = 
         fs.writeFileSync(output, buffer)
       }
     })
-    .catch(error => console.log('error'));
+    .catch(error => error);*/
 
-  return path + '/' + filename;
+  return path + '/' + outputFilename;
 };
