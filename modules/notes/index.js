@@ -80,7 +80,10 @@ function run() {
 
           await new SQL(note.type, insert)
               .setDumpFolder('notes')
-              .setHtmlFields(['text'])
+              .setHtmlFields(note.type === 'albums'
+                  ? []
+                  : ['text']
+              )
               .parse();
 
           await new SQL('activity', {

@@ -35,6 +35,21 @@ const Note = sequelize.define('Note', {
   },
   rating: {
     type: DataTypes.INTEGER,
+    get() {
+      const rating = parseInt(this.getDataValue('rating'));
+
+      if (rating > 10 && rating < 20) {
+        return 1;
+      } else if (rating > 20 && rating < 30) {
+        return 2;
+      } else if (rating > 30 && rating < 40) {
+        return 3;
+      } else if (rating > 40 && rating < 50) {
+        return 4;
+      } else {
+        return 5;
+      }
+    }
   },
   title: {
     type: DataTypes.STRING,
