@@ -2,17 +2,16 @@ const download = require('../../utils/download');
 const toSql = require('../../utils/toSql');
 const { uploadDirForPermanentImages } = require('../../utils/pathBuilder');
 const User = require('./models/User');
-const { Op } = require('sequelize');
+const { Op } = require('sequelize')
+const md5 = require('md5');
 const { UPLOAD_DISK } = require('../../constants');
 
-let limit = 200, offset = 0;
+let limit = 400, offset = 0;
+const usernameRepository = {};
 
 function run() {
   User
     .findAll({
-      where: {
-        confirmed: 1
-      },
       include: [{ all: true, nested: true }],
       order: [
         ['id', 'ASC'],
@@ -31,9 +30,11 @@ function run() {
         const path = uploadDirForPermanentImages(user.id);
         const hasAvatar = user.avatar > 0;
 
+        const username = user.id + user.username;
+
         const insert = {
           id: user.id,
-          username: user.username,
+          username: username.substr(0, 20),
           email: user.email,
           password: user.password,
           description: user.description,
@@ -62,13 +63,13 @@ function run() {
         // Парсим аватарку если есть.
         if (hasAvatar) {
           insert.avatar = `/users/${path}/avatar.jpg`;
-          await download('users', user.Medium, UPLOAD_DISK, path, 'avatar.jpg', 200, 200);
+          // await download('users', user.Medium, UPLOAD_DISK, path, 'avatar.jpg', 200, 200);
         }
 
         await toSql(insert, 'users');
       }
 
-      offset += limit;
+      offset += users.length;
 
       setTimeout(() => run(), 1000);
     });

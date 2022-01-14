@@ -1,4 +1,5 @@
-/node_modules
-/.idea
-/modules/**/dump/**/
-/modules/**/dump/*.sql
+node_modules
+.idea
+modules/**/dump/**/
+modules/**/dump/*.sql
+modules/wallets
