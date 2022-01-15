@@ -9,7 +9,23 @@ const User = sequelize.define('User', {
   },
   username: {
     type: DataTypes.STRING,
-    field: 'nickname',
+    field: 'nickname'
+    /*get() {
+      let username    = this.getDataValue('username');
+
+      const firstName = this.getDataValue('first_name');
+      const lastName  = this.getDataValue('last_name');
+
+      if (firstName && firstName.length) {
+        username = firstName;
+
+        if (lastName && lastName.length) {
+          username += ' ' + lastName;
+        }
+      }
+
+      return username;
+    }*/
   },
   email: {
     type: DataTypes.STRING,
@@ -34,27 +50,9 @@ const User = sequelize.define('User', {
   },
   first_name: {
     type: DataTypes.STRING,
-    get() {
-      const value = this.getDataValue('first_name');
-
-      if (value) {
-        return value.substr(0, 25);
-      }
-
-      return null;
-    }
   },
   last_name: {
     type: DataTypes.STRING,
-    get() {
-      const value = this.getDataValue('last_name');
-
-      if (value) {
-        return value.substr(0, 25);
-      }
-
-      return null;
-    }
   },
   birthday: {
     type: DataTypes.STRING,

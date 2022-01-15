@@ -7,8 +7,6 @@ const md5 = require('md5');
 const { UPLOAD_DISK } = require('../../constants');
 
 let limit = 400, offset = 0;
-const usernameRepository = {};
-
 function run() {
   User
     .findAll({
@@ -30,11 +28,9 @@ function run() {
         const path = uploadDirForPermanentImages(user.id);
         const hasAvatar = user.avatar > 0;
 
-        const username = user.id + user.username;
-
         const insert = {
           id: user.id,
-          username: username.substr(0, 20),
+          name: user.username,
           email: user.email,
           password: user.password,
           description: user.description,
@@ -44,20 +40,6 @@ function run() {
           last_activity_at: user.last_activity,
           created_at: user.created_at,
           updated_at: user.updated_at,
-        }
-
-        let name = '';
-
-        if (user.first_name !== null) {
-          name += user.first_name;
-        }
-
-        if (user.last_name !== null) {
-          name += ' ' + user.last_name;
-        }
-
-        if (name.length) {
-          insert.name = name;
         }
 
         // Парсим аватарку если есть.
