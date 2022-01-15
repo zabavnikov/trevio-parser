@@ -87,14 +87,13 @@ function run() {
               .parse();
 
           await new SQL('activity', {
-            key: `emitter${note.user_id}${note.type}${note.id}`,
+            id: `emitter${note.user_id}${note.type}${note.id}`,
             event_id: 1,
             emitter_id: note.user_id,
             recipient_id: note.user_id,
             travel_id: note.id,
             model_type: note.type,
             model_id: note.id,
-            ip: 1,
             weight: 0.0120,
             created_at: note.created_at,
           })
@@ -102,7 +101,7 @@ function run() {
               .parse();
         }
 
-        offset += limit;
+        offset += notes.length;
 
         setTimeout(() => run(), 1000);
       });

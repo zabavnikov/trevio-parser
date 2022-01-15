@@ -7,7 +7,7 @@ const Travel = require('./models/Travel');
 
 const { AlbumsCount, NotesCount, ReviewsCount, QuestionsCount } = require('./subqueries')
 
-let limit = 50,
+let limit = 100,
     offset = 0;
 
 function run() {
@@ -51,21 +51,20 @@ function run() {
           published_at: travel.published_at,
         }, 'travels')
 
-        /*await toSql({
-          key: `emitter${travel.user_id}travels${travel.id}`,
+        await toSql({
+          id: `emitter${travel.user_id}travels${travel.id}`,
           event_id: 1,
           emitter_id: travel.user_id,
           recipient_id: travel.user_id,
           travel_id: travel.id,
           model_type: 'travels',
           model_id: travel.id,
-          ip: 1,
           weight: 0.0120,
           created_at: travel.created_at,
-        }, 'travels', 'activity')*/
+        }, 'travels', 'activity')
 
 
-        /*
+        /*/*
          * Обложки путешествий.
          */
         /*const path = uploadDirForPermanentImages(travel.user_id);
@@ -87,7 +86,7 @@ function run() {
         }*/
       }
 
-      offset += limit;
+      offset += travels.length;
 
       setTimeout(() => run(), 1000);
     });
