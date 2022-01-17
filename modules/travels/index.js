@@ -1,9 +1,12 @@
-const toSql = require('../../utils/toSql');
+const argv = require('minimist')(process.argv.slice(2));
+
+const SQL = require('../../classes/SQL');
 const download = require('../../utils/download');
 const { uploadDirForPermanentImages, dateToPath } = require('../../utils/pathBuilder');
 const { UPLOAD_DISK } = require('../../constants');
 const { v4 } = require('uuid');
-const Travel = require('./models/Travel');
+
+const { Travel, User, Like, MediaBind } = require('../../models');
 
 const { AlbumsCount, NotesCount, ReviewsCount, QuestionsCount } = require('./subqueries')
 
@@ -22,6 +25,23 @@ function run() {
         ]
       },
       include: { all: true, nested: true },
+      /*include: [
+        {
+          model: User,
+        },
+        {
+          model: MediaBind,
+          nested: true,
+        },
+        {
+          model: Like,
+          attributes: [],
+          include: {
+            model: User,
+            attributes: []
+          }
+        },
+      ],*/
       offset,
       limit,
     })
@@ -33,7 +53,9 @@ function run() {
       for await (let travel of travels) {
         travel = travel.get();
 
-        await toSql({
+        const likeCount = 0; // travel.Likes.length;
+
+        await new SQL('travels', {
           id: travel.id,
           user_id: travel.user_id,
           title: travel.title,
@@ -43,15 +65,17 @@ function run() {
           reviews_count: travel.reviews_count,
           albums_count: travel.albums_count,
           questions_count: travel.questions_count,
+          likes_count: likeCount,
           date_start: travel.date_start,
           date_end: travel.date_end,
           created_at: travel.created_at,
           updated_at: travel.updated_at,
           deleted_at: travel.deleted_at,
           published_at: travel.published_at,
-        }, 'travels')
+        })
+        .parse();
 
-        await toSql({
+        await new SQL('activity', {
           id: `emitter${travel.user_id}travels${travel.id}`,
           event_id: 1,
           emitter_id: travel.user_id,
@@ -61,7 +85,42 @@ function run() {
           model_id: travel.id,
           weight: 0.0120,
           created_at: travel.created_at,
-        }, 'travels', 'activity')
+        })
+        .setDumpFolder('travels')
+        .setFilename('travels_activity')
+        .parse();
+
+        /*
+          Лайки.
+         */
+        if (argv.hasOwnProperty('likes')) {
+          if (likeCount > 0) {
+            for (const like of travel.Likes) {
+                await new SQL('travels_likes', {
+                  user_id: like.user_id,
+                  model_id: like.likes_id,
+                  created_at: like.created_at,
+                })
+                .setDumpFolder('travels')
+                .parse();
+
+              await new SQL('activity', {
+                id: `emitter${travel.user_id}travels${travel.id}`,
+                event_id: 2,
+                emitter_id: like.user_id,
+                recipient_id: travel.user_id,
+                travel_id: travel.id,
+                model_type: 'travels',
+                model_id: travel.id,
+                weight: 0.220,
+                created_at: travel.created_at,
+              })
+              .setDumpFolder('travels')
+              .setFilename('travels_likes_activity')
+              .parse();
+            }
+          }
+        }
 
 
         /*/*

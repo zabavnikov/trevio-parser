@@ -31,4 +31,12 @@ const dateToPath = (modelCreatedAt, modelUserId = null) => {
     return path.join('/')
 }
 
-module.exports = { uploadDirForContentImages, uploadDirForPermanentImages, dateToPath };
+const getOriginalImagePath = (filename, host = 'https://trevio.ru/imagecache/content/media') => [
+    host,
+    filename.substr(0, 1),
+    filename.substr(1, 2),
+    filename.substr(3, 2),
+    filename,
+].join('/');
+
+module.exports = { uploadDirForContentImages, uploadDirForPermanentImages, dateToPath, getOriginalImagePath };

@@ -1,12 +1,12 @@
-const toSql = require('../../utils/toSql');
+const argv = require('minimist')(process.argv.slice(2));
+
 const download = require('../../utils/download');
-const {uploadDirForPermanentImages, dateToPath} = require('../../utils/pathBuilder');
+const getImagesFromString = require('../../utils/getImagesFromString');
+const {uploadDirForPermanentImages, dateToPath, getOriginalImagePath} = require('../../utils/pathBuilder');
 const {UPLOAD_DISK} = require('../../constants');
 const Note = require('./models/Note');
 const SQL = require('../../classes/SQL');
-const {v4} = require('uuid');
-const jsdom = require("jsdom");
-const {JSDOM} = jsdom;
+const { v4 } = require('uuid');
 
 let limit = 50,
     offset = 0;
@@ -27,15 +27,30 @@ function run() {
           note = note.get();
           note.cover_id = null;
 
+          const imageRepository = [];
+          const imagesFromText = getImagesFromString(note.text);
+          const path = uploadDirForPermanentImages(note.user_id);
+          const fullPath = `users/${path}/${note.type}/${dateToPath(note.created_at)}`;
+
+          // Парсим фотки из текста. Потому что в старой бд, есть фотки без module_id
+          // а без него не узнать к какой-то заметки оно привязано, по-этому делаем хитрый ход.
+          if (imagesFromText.length) {
+            imagesFromText.forEach(filename => {
+              imageRepository.push({
+                user_id: note.user_id,
+                model_id: note.id,
+                disk: UPLOAD_DISK,
+                path: fullPath + '/' + filename,
+                filename
+              });
+            })
+          }
+
           /*
-           * Обложки путешествий.
+           * Обложки и фото из фотоальбома.
            */
           if (note.MediaBinds.length) {
-            const path = uploadDirForPermanentImages(note.user_id);
-            const fullPath = `users/${path}/${note.type}/${dateToPath(note.created_at)}`;
-
-            note.MediaBinds.forEach(async (MediaBind, index) => {
-
+            for (const MediaBind of note.MediaBinds) {
               if (MediaBind.dataValues.tag === 'cover') {
                 note.cover_id = MediaBind.dataValues.media_id;
               } else {
@@ -45,21 +60,28 @@ function run() {
               if (MediaBind.Medium) {
                 const filename = MediaBind.Medium.dataValues.filename;
 
-                // await download('notes', MediaBind.Medium, UPLOAD_DISK, fullPath, filename, 1920, 1080);
-
-                await new SQL(`${note.type}_images`, {
-                  id: MediaBind.Medium.dataValues.id,
+                imageRepository.push({
                   user_id: note.user_id,
                   model_id: note.id,
                   disk: UPLOAD_DISK,
                   path: fullPath + '/' + filename,
+                  filename
                 })
-                    .setDumpFolder('notes')
-                    .parse();
               }
-            })
+            }
           }
 
+          if (imageRepository.length) {
+            for (const image of imageRepository) {
+              await download('notes', image.filename, UPLOAD_DISK, fullPath, image.filename, 1920, 1080);
+
+              delete image.filename;
+
+              await new SQL(`${note.type}_images`, image)
+                  .setDumpFolder('notes')
+                  .parse();
+            }
+          }
 
           const insert = {
             id: note.id,
@@ -97,8 +119,9 @@ function run() {
             weight: 0.0120,
             created_at: note.created_at,
           })
-              .setDumpFolder('notes')
-              .parse();
+          .setFilename('notes_activity')
+          .setDumpFolder('notes')
+          .parse();
         }
 
         offset += notes.length;

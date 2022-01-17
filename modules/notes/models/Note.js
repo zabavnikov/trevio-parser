@@ -60,6 +60,26 @@ const Note = sequelize.define('Note', {
   text: {
     type: DataTypes.TEXT,
     field: 'wysiwyg',
+    get() {
+      let text = this.getDataValue('text');
+
+      if (text) {
+        text = text.replace(
+            /<img.*?src="(.*?)".*?data-id="(.*?)"[^>]+>/g,
+            '<ce-image src="$1" data-id="$2"></ce-image>'
+        )
+            .replace(/<br.*?>/, '')
+            .replace(/&nbsp;/, '')
+            .replace('null', '');
+
+        return text
+            .replace(/<p><\/p>/g, '')
+            .replace(/<p>\s+<\/p>/g, '')
+            .trim();
+      }
+
+      return text;
+    }
   },
   message_count: {
     type: DataTypes.INTEGER,
@@ -88,7 +108,7 @@ Note.hasMany(MediaBind, {
   scope: {
     module_type_id: 2,
     tag: {
-      [Sequelize.Op.in]: ['wysiwyg', 'cover']
+      [Sequelize.Op.in]: ['cover', 'gallery']
     },
   },
 });

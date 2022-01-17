@@ -2,6 +2,7 @@ const { DataTypes, Sequelize, sequelize } = require('../../../database');
 const { dateFields } = require('../../../utils/modelFieldset');
 const User = require('../../users/models/User');
 const MediaBind = require('../../media/models/MediaBind');
+const Like = require('../../likes/models/Like');
 
 const Travel = sequelize.define('Travel', {
   id: {
@@ -65,5 +66,12 @@ Travel.hasOne(MediaBind, {
     tag: 'cover',
   },
 });
+
+/*Travel.hasMany(Like, {
+  foreignKey: 'likes_id',
+  scope: {
+    module_type: 1,
+  },
+});*/
 
 module.exports = Travel;
