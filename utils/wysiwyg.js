@@ -1,6 +1,6 @@
 const wysiwyg = (string) => {
   if (! string) return string;
-  
+
   return string
       .replace(
           /<img.*?src="(.*?)" .*?data-id="(.*?)"[^>]+>/g,

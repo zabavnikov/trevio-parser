@@ -1,7 +1,6 @@
 const argv = require('minimist')(process.argv.slice(2));
 
 const { SQL, Download } = require('../../classes');
-const download = require('../../utils/download');
 const toSql = require('../../utils/toSql');
 const { uploadDirForPermanentImages, dateToPath } = require('../../utils/pathBuilder');
 const { UPLOAD_DISK } = require('../../constants');
@@ -128,7 +127,7 @@ function run() {
          * Обложки путешествий.
          */
         const path = uploadDirForPermanentImages(travel.user_id);
-        const fullPath = `users/${path}/travels/${dateToPath(travel.created_at)}`;
+        const outputPath = `users/${path}/travels/${dateToPath(travel.created_at)}`;
         const cover = travel.MediaBind
             ? travel.MediaBind.Medium
             : null;
@@ -139,10 +138,12 @@ function run() {
             user_id: travel.user_id,
             model_id: travel.id,
             disk: UPLOAD_DISK,
-            path: fullPath + '/' + filename,
+            path: outputPath + '/' + filename,
           }, 'travels', 'travels_images')
 
-          await download('travels', cover, UPLOAD_DISK, fullPath, filename, 1024, 768);
+          await new Download('travels', cover.filename, outputPath, filename)
+              .setWidthHeight(1024, 768)
+              .download();
         }
       }
 

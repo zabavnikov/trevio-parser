@@ -22,7 +22,7 @@ const Travel = sequelize.define('Travel', {
       const value = this.getDataValue('text');
 
       if (value) {
-        return value.trim().substr(0, 400);
+        return value.trim().substr(0, 1000);
       }
 
       return null;
