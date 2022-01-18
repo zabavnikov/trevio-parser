@@ -40,7 +40,7 @@ module.exports = async function (fields, moduleName, tableName = null, htmlField
     tableName = moduleName;
   }
 
-  const file = `${path.resolve(__dirname, `../modules/${moduleName}`)}/dump/${tableName}.sql`;
+  const file = `${path.resolve(__dirname, `../modules/${moduleName}`)}/output/${tableName}.sql`;
 
   fields = normalize(fields, htmlFields);
 

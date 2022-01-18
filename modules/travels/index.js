@@ -1,7 +1,8 @@
 const argv = require('minimist')(process.argv.slice(2));
 
-const SQL = require('../../classes/SQL');
+const { SQL, Download } = require('../../classes');
 const download = require('../../utils/download');
+const toSql = require('../../utils/toSql');
 const { uploadDirForPermanentImages, dateToPath } = require('../../utils/pathBuilder');
 const { UPLOAD_DISK } = require('../../constants');
 const { v4 } = require('uuid');
@@ -50,7 +51,7 @@ function run() {
         return
       }
 
-      for await (let travel of travels) {
+      for (let travel of travels) {
         travel = travel.get();
 
         const likeCount = 0; // travel.Likes.length;
@@ -126,7 +127,7 @@ function run() {
         /*/*
          * Обложки путешествий.
          */
-        /*const path = uploadDirForPermanentImages(travel.user_id);
+        const path = uploadDirForPermanentImages(travel.user_id);
         const fullPath = `users/${path}/travels/${dateToPath(travel.created_at)}`;
         const cover = travel.MediaBind
             ? travel.MediaBind.Medium
@@ -142,7 +143,7 @@ function run() {
           }, 'travels', 'travels_images')
 
           await download('travels', cover, UPLOAD_DISK, fullPath, filename, 1024, 768);
-        }*/
+        }
       }
 
       offset += travels.length;

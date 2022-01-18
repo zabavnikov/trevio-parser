@@ -71,7 +71,7 @@ class SQL {
    *
    */
   async parse() {
-    const file = `${path.resolve(__dirname, `../modules/${this.folder}`)}/dump/${this.filename}.sql`;
+    const file = `${path.resolve(__dirname, `../modules/${this.folder}`)}/output/${this.filename}.sql`;
 
     this.fields = this._normalize(this.fields);
 

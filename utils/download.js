@@ -48,7 +48,7 @@ module.exports = async (moduleName, filename, disk, path, outputFilename = false
       outputFilename += '.jpg';
     }
 
-    const outputDir = [nodePath.resolve(__dirname, `../modules/${moduleName}/dump/images`), disk, path].join('/');
+    const outputDir = [nodePath.resolve(__dirname, `../modules/${moduleName}/output/images`), disk, path].join('/');
 
     if (! existsSync(outputDir)) {
       await fs.mkdir(outputDir, {
@@ -62,6 +62,9 @@ module.exports = async (moduleName, filename, disk, path, outputFilename = false
 
     if (width || height) {
       response = await sharp(response)
+          .jpeg({
+            mozjpeg: true,
+          })
           .resize(width, height, {
             withoutEnlargement: true
           })

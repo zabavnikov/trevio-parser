@@ -26,8 +26,6 @@ const Note = sequelize.define('Note', {
         return 'albums';
       } else if (typeId === 3 || typeId === 5) {
         return 'reviews';
-      } else if (typeId === 8) {
-        return 'questions';
       } else {
         return 'notes';
       }
@@ -65,17 +63,9 @@ const Note = sequelize.define('Note', {
 
       if (text) {
         text = text.replace(
-            /<img.*?src="(.*?)".*?data-id="(.*?)"[^>]+>/g,
-            '<ce-image src="$1" data-id="$2"></ce-image>'
-        )
-            .replace(/<br.*?>/, '')
-            .replace(/&nbsp;/, '')
-            .replace('null', '');
-
-        return text
-            .replace(/<p><\/p>/g, '')
-            .replace(/<p>\s+<\/p>/g, '')
-            .trim();
+            /src="\/imagecache\/(.*?)"/g,
+            'src="https://trevio.ru/imagecache/$1"'
+        );
       }
 
       return text;

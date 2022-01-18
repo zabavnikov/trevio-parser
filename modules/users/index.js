@@ -1,9 +1,6 @@
-const download = require('../../utils/download');
-const toSql = require('../../utils/toSql');
+const { SQL, Download } = require('../../classes');
 const { uploadDirForPermanentImages } = require('../../utils/pathBuilder');
 const User = require('./models/User');
-const { Op } = require('sequelize')
-const md5 = require('md5');
 const { UPLOAD_DISK } = require('../../constants');
 
 let limit = 400, offset = 0;
@@ -22,13 +19,13 @@ function run() {
         return;
       }
 
-      for await (let user of users) {
+      for (let user of users) {
         user = user.get();
 
         const path = uploadDirForPermanentImages(user.id);
         const hasAvatar = user.avatar > 0;
 
-        const insert = {
+        const fields = {
           id: user.id,
           name: user.username,
           email: user.email,
@@ -44,11 +41,14 @@ function run() {
 
         // Парсим аватарку если есть.
         if (hasAvatar) {
-          insert.avatar = `/users/${path}/avatar.jpg`;
-          // await download('users', user.Medium, UPLOAD_DISK, path, 'avatar.jpg', 200, 200);
+          fields.avatar = `/users/${path}/avatar.jpg`;
+
+          await new Download('users', user.Medium.filename, `users/${path}`, 'avatar.jpg')
+              .setWidthHeight(200, 200)
+              .download();
         }
 
-        await toSql(insert, 'users');
+        // await new SQL('users', fields).parse();
       }
 
       offset += users.length;

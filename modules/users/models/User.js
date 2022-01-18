@@ -10,22 +10,6 @@ const User = sequelize.define('User', {
   username: {
     type: DataTypes.STRING,
     field: 'nickname'
-    /*get() {
-      let username    = this.getDataValue('username');
-
-      const firstName = this.getDataValue('first_name');
-      const lastName  = this.getDataValue('last_name');
-
-      if (firstName && firstName.length) {
-        username = firstName;
-
-        if (lastName && lastName.length) {
-          username += ' ' + lastName;
-        }
-      }
-
-      return username;
-    }*/
   },
   email: {
     type: DataTypes.STRING,

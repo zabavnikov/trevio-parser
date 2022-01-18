@@ -1,5 +1,5 @@
 node_modules
 .idea
-modules/**/dump/**/
-modules/**/dump/*.sql
+modules/**/output/**/
+modules/**/output/*.sql
 modules/wallets
