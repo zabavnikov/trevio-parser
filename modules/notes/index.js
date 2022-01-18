@@ -9,14 +9,18 @@ const Note = require('./models/Note');
 const { Download, SQL } = require('../../classes');
 
 let limit = 100,
-    offset = 0;
+    offset = 0,
+    globalImageId = 0;
 
 function run() {
   Note
       .findAll({
-        include: {all: true, nested: true},
+        order: [
+          ['id', 'ASC'],
+        ],
         offset,
         limit,
+        include: {all: true, nested: true},
       })
       .then(async notes => {
         if (notes.length === 0) return;
@@ -34,22 +38,21 @@ function run() {
            */
           if (note.MediaBinds.length) {
             for (const MediaBind of note.MediaBinds) {
-              if (MediaBind.dataValues.tag === 'cover') {
-                note.cover_id = MediaBind.dataValues.media_id;
-              } else {
-                note.cover_id = note.MediaBinds[0].dataValues.media_id;
-              }
-
               const filename = MediaBind.Medium.dataValues.filename;
 
               imageRepository.push({
-                id: MediaBind.Medium.dataValues.id,
                 user_id: note.user_id,
                 model_id: note.id,
                 disk: UPLOAD_DISK,
                 path: `${fullPath}/${note.id}-${filename}`,
                 filename
               });
+
+              globalImageId++;
+
+              if (MediaBind.dataValues.tag == 'cover' && !note.cover_id) {
+                note.cover_id = globalImageId;
+              }
             }
           }
 
@@ -59,22 +62,24 @@ function run() {
             // Парсим фотки из текста. Потому что в старой бд, есть фотки без module_id
             // а без него не узнать к какой-то заметки оно привязано, по-этому делаем хитрый ход.
             if (imagesFromText.length) {
-              imagesFromText.forEach(image => {
+              imagesFromText.forEach(filename => {
                 imageRepository.push({
-                  id: image.id,
                   user_id: note.user_id,
                   model_id: note.id,
                   disk: UPLOAD_DISK,
-                  path: `${fullPath}/${note.id}-${image.filename}`,
-                  filename: image.filename,
+                  path: `${fullPath}/${note.id}-${filename}`,
+                  filename,
                 });
+
+                globalImageId++;
               })
             }
           }
 
           if (imageRepository.length) {
-            for await (const image of imageRepository) {
-              // console.log(imgproxy(image.path), `${DOMAIN}/${image.path}`)
+            for (const image of imageRepository) {
+              const fields = {...image};
+              delete fields.filename;
 
               /*await new Download('notes', image.filename, fullPath, `${note.id}-${image.filename}`)
                   .setWidthHeight(640, 480)
@@ -88,9 +93,7 @@ function run() {
                 }
               }
 
-              delete image.filename;
-
-              await new SQL(`${note.type}_images`, image)
+              await new SQL(`${note.type}_images`, fields)
                   .setDumpFolder('notes')
                   .parse();
             }
@@ -121,7 +124,7 @@ function run() {
               )
               .parse();
 
-          await new SQL('activity', {
+          /*await new SQL('activity', {
             id: `emitter${note.user_id}${note.type}${note.id}`,
             event_id: 1,
             emitter_id: note.user_id,
@@ -134,7 +137,7 @@ function run() {
           })
           .setFilename('notes_activity')
           .setDumpFolder('notes')
-          .parse();
+          .parse();*/
         }
 
         offset += notes.length;

@@ -16,6 +16,9 @@ let limit = 100,
 function run() {
   Travel
     .findAll({
+      order: [
+        ['id', 'ASC'],
+      ],
       attributes: {
         include: [
           AlbumsCount,
