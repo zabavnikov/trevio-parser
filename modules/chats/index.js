@@ -4,6 +4,7 @@ const Note = require('../notes/models/Note');
 const User = require('../users/models/User');
 const ChatMessage = require('./models/ChatMessage');
 const ChatMessageImage = require('./models/ChatMessageImage');
+const ChatMessageLike = require('./models/ChatMessageLike');
 
 let limit = 100,
     offset = 0;
@@ -57,18 +58,40 @@ function run() {
             lastMessageAt = message.created_at;
 
             /*
+              ЛАЙКИ СООБЩЕНИЙ ЧАТА.
+             */
+            if (message.likes_count > 0) {
+              const likes = await ChatMessageLike.findAll({
+                where: {
+                  message_id: message.id
+                }
+              });
+
+              if (likes.length) {
+                for (const like of likes) {
+                  await new SQL('trevio_chats.chats_messages_likes', {
+                    user_id:  like.user_id,
+                    model_id: like.message_id,
+                  })
+                      .setDumpFolder('chats')
+                      .parse();
+                }
+              }
+            }
+
+            /*
               ИЗОБРАЖЕНИЯ СООБЩЕНИЙ ЧАТА.
              */
-            const images = await ChatMessageImage.findAll({
+            /*const images = await ChatMessageImage.findAll({
               where: {
                 message_id: message.id
               }
-            })
+            });
 
             if (images.length) {
               for (const image of images) {
                 // добавить в путь дату, см загрузку в чатах на тестовом.
-                // const path = uploadDirForPermanentImages(image.id);
+                const path = uploadDirForPermanentImages(image.id);
 
                 await new Download('chats', image.path, `/chats/${path}`, `${image.id}.jpg`)
                     .setWidthHeight(640, 480)
@@ -85,7 +108,7 @@ function run() {
                     .setDumpFolder('chats')
                     .parse();
               }
-            }
+            }*/
           }
         }
 
