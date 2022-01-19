@@ -37,6 +37,8 @@ function run() {
         })
 
         if (messages.length) {
+          const members = {};
+
           for (const message of messages) {
             await new SQL('trevio_chats.chats_messages', {
               id:             message.id,
@@ -56,6 +58,13 @@ function run() {
 
             lastMessageId = message.id;
             lastMessageAt = message.created_at;
+
+            /*
+              УЧАСТНИКИ ЧАТА.
+             */
+            if (! members.hasOwnProperty(message.user_id)) {
+              members[message.user_id] = message.created_at;
+            }
 
             /*
               ЛАЙКИ СООБЩЕНИЙ ЧАТА.
@@ -109,6 +118,22 @@ function run() {
                     .parse();
               }
             }*/
+          }
+
+          /*
+           УЧАСТНИКИ ЧАТА.
+          */
+          if (Object.keys(members).length) {
+            for (const memberId in members) {
+              await new SQL('trevio_chats.chats_members', {
+                chat_id:            note.id,
+                user_id:            memberId,
+                chat_joined_at:     members[memberId],
+                chat_last_visit_at: members[memberId],
+              })
+                  .setDumpFolder('chats')
+                  .parse();
+            }
           }
         }
 
