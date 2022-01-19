@@ -2,12 +2,14 @@
   "scripts": {
     "users": "node ./modules/users/index.js",
     "travels": "node ./modules/travels/index.js",
-    "notes": "node ./modules/notes/index.js"
+    "notes": "node ./modules/notes/index.js",
+    "chats": "node ./modules/chats/index.js"
   },
   "dependencies": {
     "axios": "^0.24.0",
     "create-hmac": "^1.1.7",
     "jsdom": "^19.0.0",
+    "locutus": "^2.0.15",
     "lodash": "^4.17.21",
     "md5": "^2.3.0",
     "minimist": "^1.2.5",
@@ -16,6 +18,7 @@
     "request-promise": "^4.2.6",
     "sequelize": "^6.13.0",
     "sharp": "^0.29.3",
+    "striptags": "^4.0.0-alpha.2",
     "superagent": "^7.0.2",
     "uuid": "^8.3.2"
   }

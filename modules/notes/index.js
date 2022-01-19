@@ -3,14 +3,17 @@ const argv = require('minimist')(process.argv.slice(2));
 const getImagesFromString = require('../../utils/getImagesFromString');
 const {uploadDirForPermanentImages, dateToPath, getOriginalFilePath} = require('../../utils/pathBuilder');
 const imgproxy = require('../../utils/imgproxy');
-const wysiwyg = require('../../utils/wysiwyg');
 const {UPLOAD_DISK, DOMAIN} = require('../../constants');
 const Note = require('./models/Note');
 const { Download, SQL } = require('../../classes');
 
 let limit = 100,
     offset = 0,
-    globalImageId = 0;
+    globalImageID = {
+      notes: 0,
+      reviews: 0,
+      albums: 0,
+    }
 
 function run() {
   Note
@@ -27,7 +30,6 @@ function run() {
 
         for (let note of notes) {
           note = note.get();
-          note.cover_id = null;
 
           const path = uploadDirForPermanentImages(note.user_id);
           const fullPath = `users/${path}/${note.type}/${dateToPath(note.created_at)}`;
@@ -36,6 +38,8 @@ function run() {
           /*
            * Обложки и фото из фотоальбома.
            */
+          note.cover_id = null;
+
           if (note.MediaBinds.length) {
             for (const MediaBind of note.MediaBinds) {
               const filename = MediaBind.Medium.dataValues.filename;
@@ -48,30 +52,34 @@ function run() {
                 filename
               });
 
-              globalImageId++;
+              globalImageID[note.type]++;
 
               if (MediaBind.dataValues.tag == 'cover' && !note.cover_id) {
-                note.cover_id = globalImageId;
+                note.cover_id = globalImageID[note.type];
               }
             }
           }
 
-          if (note.type === 'notes') {
+          // Парсим фотки из текста. Потому что в старой бд, есть фотки без module_id
+          // а без него не узнать к какой-то заметки оно привязано, по-этому делаем хитрый ход.
+          if (note.type === 'notes' || note.type === 'reviews') {
             const imagesFromText = getImagesFromString(note.text);
 
-            // Парсим фотки из текста. Потому что в старой бд, есть фотки без module_id
-            // а без него не узнать к какой-то заметки оно привязано, по-этому делаем хитрый ход.
             if (imagesFromText.length) {
-              imagesFromText.forEach(filename => {
+              imagesFromText.forEach(image => {
                 imageRepository.push({
                   user_id: note.user_id,
                   model_id: note.id,
                   disk: UPLOAD_DISK,
-                  path: `${fullPath}/${note.id}-${filename}`,
-                  filename,
+                  path: `${fullPath}/${note.id}-${image.filename}`,
+                  filename: image.filename,
                 });
 
-                globalImageId++;
+                globalImageID[note.type]++;
+
+                if (image.id) {
+                  note.text = note.text.replace(new RegExp(`data-id="${image.id}"`, 'g'), `data-id="${globalImageID[note.type]}"`);
+                }
               })
             }
           }
@@ -85,11 +93,11 @@ function run() {
                   .setWidthHeight(640, 480)
                   .download();*/
 
-              if (note.type === 'notes') {
+              if (note.type === 'notes' || note.type === 'reviews') {
                 const regExp = new RegExp(getOriginalFilePath(image.filename), 'g');
 
                 if (regExp.test(note.text)) {
-                  note.text = note.text.replace(regExp, `"${DOMAIN}/${image.path}"`);
+                  note.text = note.text.replace(regExp, `${DOMAIN}/${image.path}`);
                 }
               }
 
@@ -101,11 +109,13 @@ function run() {
 
           const insert = {
             id: note.id,
+            chat_id: note.id,
             user_id: note.user_id,
             travel_id: note.travel_id,
             cover_id: note.cover_id,
             title: note.title,
-            text: `<p>${note.short_text}</p>${wysiwyg(note.text)}`,
+            text: `<p>${note.short_text}</p>${note.text}`,
+            messages_count: note.messages_count,
             created_at: note.created_at,
             updated_at: note.updated_at,
             deleted_at: note.deleted_at,
@@ -118,13 +128,13 @@ function run() {
 
           await new SQL(note.type, insert)
               .setDumpFolder('notes')
-              .setHtmlFields(note.type === 'albums'
+              .setAllowedTags(note.type === 'albums'
                   ? []
-                  : ['text']
+                  : ['p', 'ce-image', 'a']
               )
               .parse();
 
-          /*await new SQL('activity', {
+          await new SQL('activity', {
             id: `emitter${note.user_id}${note.type}${note.id}`,
             event_id: 1,
             emitter_id: note.user_id,
@@ -137,7 +147,7 @@ function run() {
           })
           .setFilename('notes_activity')
           .setDumpFolder('notes')
-          .parse();*/
+          .parse();
         }
 
         offset += notes.length;

@@ -1,19 +1,20 @@
 const fs = require('fs');
 const path = require('path');
 const forEach = require('lodash/forEach');
+const striptags = require("striptags").striptags;
 
 class SQL {
   constructor(tableName, fields) {
-    this.tableName  = tableName;
-    this.fields     = fields;
-    this.htmlFields = [];
-    this.folder     = tableName;
-    this.filename   = tableName;
+    this.tableName    = tableName;
+    this.fields       = fields;
+    this.allowedTags  = [];
+    this.folder       = tableName;
+    this.filename     = tableName;
   }
 
-  setHtmlFields(htmlFields = []) {
-    if (htmlFields.length > 0) {
-      this.htmlFields = htmlFields;
+  setAllowedTags(allowedTags = []) {
+    if (allowedTags.length) {
+      this.allowedTags = new Set(allowedTags);
     }
 
     return this;
@@ -48,16 +49,25 @@ class SQL {
             fields[key] = value.substr(0, 1000);
           }
 
-          if (this.htmlFields.indexOf(key) === -1) {
-            value = value.replace('<br>', ' ');
-            value = value.replace(new RegExp(/<\/[a-z]>/, 'gmi'), ' '); // Например: </p> заменяем на пробел.
-            value = value.replace(new RegExp(/(<([^>]+)>)/, 'gmi'), ''); // Удаляем остальные теги.
+          // <a>
+          if (this.allowedTags.size === 0) {
+            value = value.replace(new RegExp(/("|')/, 'gm'), ''); // Удаляем кавычки.
           }
 
-          value = value.replace(new RegExp(/("|')/, 'gm'), ''); // Удаляем кавычки.
-          value = value.trim();
+          // Удаляем &nbsp;.
+          value = value.replace(/&nbsp;/g, '');
+          // Удаляем пустые теги p.
+          value = value.replace(/<p>\s*<\/p>/g, '');
 
-          fields[key] = `"${value}"`;
+          if (this.allowedTags.size) {
+            value = striptags(value, {
+              allowedTags: this.allowedTags
+            });
+          } else {
+            value = striptags(value);
+          }
+
+          fields[key] = `'${value.trim()}'`;
         }
       } else {
         fields[key] = `NULL`;

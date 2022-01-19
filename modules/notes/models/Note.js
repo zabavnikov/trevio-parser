@@ -17,6 +17,10 @@ const Note = sequelize.define('Note', {
   note_type_id: {
     type: DataTypes.INTEGER,
   },
+  messages_count: {
+    type: DataTypes.INTEGER,
+    field: 'message_count',
+  },
   type: {
     type: DataTypes.VIRTUAL,
     get() {
@@ -62,10 +66,15 @@ const Note = sequelize.define('Note', {
       let text = this.getDataValue('text');
 
       if (text) {
-        text = text.replace(
-            /src="\/imagecache\/(.*?)"/g,
-            'src="https://trevio.ru/imagecache/$1"'
-        );
+        return text
+          .replace(
+              /src="\/imagecache\/(.*?)"/g,
+              'src="https://trevio.ru/imagecache/$1"'
+          ).replace(
+              /<img(.*?)>/g,
+              '<ce-image$1></ce-image>'
+          )
+          .trim();
       }
 
       return text;
