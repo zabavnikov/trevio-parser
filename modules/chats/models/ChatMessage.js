@@ -3,7 +3,7 @@ const { dateFields } = require('../../../utils/modelFieldset');
 const User = require('../../users/models/User');
 const dateConverter = require('../../../utils/dateConverter');
 
-const ChatMessage = sequelize.define('NoteChat', {
+const ChatMessage = sequelize.define('ChatMessage', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,

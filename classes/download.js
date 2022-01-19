@@ -3,7 +3,6 @@ const { existsSync } = require('fs');
 const path = require('path');
 const sharp = require('sharp');
 
-const { getOriginalFilePath } = require('../utils/pathBuilder');
 const { STORAGE_PATH } = require('../constants');
 
 class Download {
@@ -21,6 +20,8 @@ class Download {
     this.outputFilename   = outputFilename ? outputFilename : originalFilename;
     this.width            = null;
     this.height           = null;
+    this.host             = STORAGE_PATH;
+    this.filePathBuilder  = false;
   }
 
   setWidthHeight(width, height) {
@@ -29,11 +30,32 @@ class Download {
     return this;
   }
 
-  async download(host) {
-    let file = getOriginalFilePath(this.originalFilename, host
-        ? host
-        : STORAGE_PATH
-    );
+  setHost(host) {
+    this.host = host;
+    return this;
+  }
+
+  skipFilePathBuilder() {
+    this.filePathBuilder = true;
+    return this;
+  }
+
+  getOriginalFilePath(filename) {
+    if (this.filePathBuilder) {
+      return [this.host, filename].join('/');
+    }
+
+    return [
+      this.host,
+      filename.substr(0, 1),
+      filename.substr(1, 2),
+      filename.substr(3, 2),
+      filename,
+    ].join('/');
+  }
+
+  async download() {
+    let file = this.getOriginalFilePath(this.originalFilename);
 
     if (existsSync(file)) {
       let outputDirectory = path.resolve(__dirname, `../modules/${this.moduleName}/output/images/${this.outputPath}`);

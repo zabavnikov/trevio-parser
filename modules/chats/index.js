@@ -1,7 +1,9 @@
-const { SQL } = require('../../classes');
+const { SQL, Download } = require('../../classes');
+const { uploadDirForPermanentImages } = require('../../utils/pathBuilder');
 const Note = require('../notes/models/Note');
 const User = require('../users/models/User');
 const ChatMessage = require('./models/ChatMessage');
+const ChatMessageImage = require('./models/ChatMessageImage');
 
 let limit = 100,
     offset = 0;
@@ -53,6 +55,36 @@ function run() {
 
             lastMessageId = message.id;
             lastMessageAt = message.created_at;
+
+            /*
+              ИЗОБРАЖЕНИЯ СООБЩЕНИЙ ЧАТА.
+             */
+            const images = await ChatMessageImage.findAll({
+              where: {
+                message_id: message.id
+              }
+            })
+
+            if (images.length) {
+              for (const image of images) {
+                const path = uploadDirForPermanentImages(image.id);
+
+                await new Download('chats', image.path, `/chats/${path}`, `${image.id}.jpg`)
+                    .setWidthHeight(640, 480)
+                    .skipFilePathBuilder()
+                    .setHost('/var/trevio_images/chats')
+                    .download();
+
+                await new SQL('trevio_chats.chats_messages_images', {
+                  user_id:    image.user_id,
+                  model_id:   message.id,
+                  disk:       's3',
+                  path:       `/chats/${path}/${image.id}.jpg`,
+                })
+                    .setDumpFolder('chats')
+                    .parse();
+              }
+            }
           }
         }
 
