@@ -2,6 +2,7 @@ const getImagesFromString = require('../../utils/getImagesFromString');
 const {uploadDirForPermanentImages, dateToPath, getOriginalFilePath} = require('../../utils/pathBuilder');
 const imgproxy = require('../../utils/imgproxy');
 const {UPLOAD_DISK, DOMAIN} = require('../../constants');
+const { Sequelize } = require('../../database');
 const { Download, SQL } = require('../../classes');
 
 const {
