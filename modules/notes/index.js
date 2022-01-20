@@ -42,6 +42,11 @@ function run() {
             ]
           },
         ],
+        where: {
+          isCompany: Sequelize.where(Sequelize.col('User.Company.user_id'), {
+            [Sequelize.Op.eq]: null
+          }),
+        },
       })
       .then(async notes => {
         if (notes.length === 0) return;
