@@ -3,7 +3,9 @@
     "users": "node ./modules/users/index.js",
     "travels": "node ./modules/travels/index.js",
     "notes": "node ./modules/notes/index.js",
-    "chats": "node ./modules/chats/index.js"
+    "chats": "node ./modules/chats/index.js",
+    "subscriptions": "node ./modules/subscriptions/index.js",
+    "share": "node ./modules/share/index.js"
   },
   "dependencies": {
     "axios": "^0.24.0",

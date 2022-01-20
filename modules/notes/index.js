@@ -5,6 +5,7 @@ const {UPLOAD_DISK, DOMAIN} = require('../../constants');
 const Note = require('./models/Note');
 const { Download, SQL } = require('../../classes');
 const LikesParserPartial = require('../likes/likes-parser-partial');
+const ShareParserPartial = require('../share/share-parser-partial');
 
 let limit = 100,
     offset = 0,
@@ -29,6 +30,22 @@ function run() {
 
         for (let note of notes) {
           note = note.get();
+
+          /*
+            ЛАЙКИ.
+           */
+          const likes = await LikesParserPartial('notes', `${note.type}_likes`, {
+            likes_id: note.id,
+            module_type: 2,
+          }, note);
+
+          /*
+            ШАРА.
+           */
+          const share = await ShareParserPartial('notes', `${note.type}_share`, {
+            model_id:   note.id,
+            model_type: 'Modules\\Notes\\Entities\\Notes',
+          }, note);
 
           const path = uploadDirForPermanentImages(note.user_id);
           const fullPath = `users/${path}/${note.type}/${dateToPath(note.created_at)}`;
@@ -101,18 +118,11 @@ function run() {
               }
 
               await new SQL(`${note.type}_images`, fields)
-                  .setDumpFolder('notes')
+                  .setOutputFolder('notes')
+                  .setOutputFilename(`trevio.${note.type}_images`)
                   .parse();
             }
           }
-
-          /*
-            ЛАЙКИ.
-           */
-          const likes = await LikesParserPartial('notes', `${note.type}_likes`, {
-            likes_id: note.id,
-            module_type: 2,
-          }, note);
 
           const insert = {
             id: note.id,
@@ -124,6 +134,7 @@ function run() {
             text: `<p>${note.short_text}</p>${note.text}`,
             messages_count: note.messages_count,
             likes_count: likes.length,
+            share_count: share.length,
             created_at: note.created_at,
             updated_at: note.updated_at,
             deleted_at: note.deleted_at,
@@ -134,15 +145,15 @@ function run() {
             insert.stars = note.rating;
           }
 
-          await new SQL(note.type, insert)
-              .setDumpFolder('notes')
+          await new SQL(`trevio.${note.type}`, insert)
+              .setOutputFolder('notes')
               .setAllowedTags(note.type === 'albums'
                   ? []
-                  : ['p', 'ce-image', 'a']
+                  : ['p', 'ce-image', 'a', 'iframe']
               )
               .parse();
 
-          await new SQL('activity', {
+          await new SQL(`trevio.activity`, {
             id: `emitter${note.user_id}${note.type}${note.id}`,
             event_id: 1,
             emitter_id: note.user_id,
@@ -153,8 +164,8 @@ function run() {
             weight: 0.0120,
             created_at: note.created_at,
           })
-          .setFilename('notes_activity')
-          .setDumpFolder('notes')
+          .setOutputFolder('notes')
+          .setOutputFilename(`trevio.${note.type}_activity`)
           .parse();
         }
 

@@ -58,6 +58,9 @@ const Travel = sequelize.define('Travel', {
         [Sequelize.Op.eq]: 1
       }),
     },
+    include: [
+      {model: User}
+    ]
   },
 });
 

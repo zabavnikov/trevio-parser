@@ -68,11 +68,14 @@ const Note = sequelize.define('Note', {
       if (text) {
         return text
           .replace(
-              /src="\/imagecache\/(.*?)"/g,
-              'src="https://trevio.ru/imagecache/$1"'
+            /src="\/imagecache\/(.*?)"/g,
+            'src="https://trevio.ru/imagecache/$1"'
           ).replace(
-              /<img(.*?)>/g,
-              '<ce-image$1></ce-image>'
+            /<img(.*?)>/g,
+            '<ce-image$1></ce-image>'
+          ).replace(
+            /<iframe.*?src="(.*?)"[^>]+><\/iframe>/g,
+            '<t-embed src="$1" provider="youtube"></t-embed>'
           )
           .trim();
       }
@@ -95,6 +98,9 @@ const Note = sequelize.define('Note', {
         [Sequelize.Op.eq]: 1
       }),
     },
+    include: [
+      {model: User}
+    ]
   },
 });
 

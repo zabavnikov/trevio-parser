@@ -42,6 +42,15 @@ class SQL {
    * @param filename
    * @returns {SQL}
    */
+  setOutputFilename(filename) {
+    this.filename = filename;
+    return this;
+  }
+
+  /**
+   * @param filename
+   * @returns {SQL}
+   */
   setFilename(filename) {
     this.filename = filename;
     return this;

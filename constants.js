@@ -11,6 +11,14 @@ module.exports = {
     likes: {
       eventId: 2,
       weight: 2,
+    },
+    subscriptions: {
+      eventId: 3,
+      weight:  3,
+    },
+    share: {
+      eventId: 4,
+      weight:  4,
     }
   }
 }

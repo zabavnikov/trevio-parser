@@ -2,11 +2,9 @@ const { SQL } = require('../../classes');
 const { EVENTS } = require('../../constants');
 const Like = require('./models/Like');
 
-module.exports = async (outputFolder, tableName, where, model) => {
+module.exports = async (outputFolder, tableName, where, model = {}) => {
   const likes = await Like.findAll({
-    where: {
-      ...where
-    }
+    where
   });
 
   if (likes.length) {
