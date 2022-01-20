@@ -94,7 +94,7 @@ const Note = sequelize.define('Note', {
     where: {
       status: 'published',
       deleted_at: null,
-      isConfirmed: Sequelize.where(Sequelize.col('User.confirmed'), {
+      user_confirmed: Sequelize.where(Sequelize.col('User.confirmed'), {
         [Sequelize.Op.eq]: 1
       }),
     },

@@ -91,7 +91,7 @@ function run() {
             /*
               ИЗОБРАЖЕНИЯ СООБЩЕНИЙ ЧАТА.
              */
-            /*const images = await ChatMessageImage.findAll({
+            const images = await ChatMessageImage.findAll({
               where: {
                 message_id: message.id
               }
@@ -102,11 +102,11 @@ function run() {
                 // добавить в путь дату, см загрузку в чатах на тестовом.
                 const path = uploadDirForPermanentImages(image.id);
 
-                await new Download('chats', image.path, `/chats/${path}`, `${image.id}.jpg`)
+                /*await new Download('chats', image.path, `/chats/${path}`, `${image.id}.jpg`)
                     .setWidthHeight(640, 480)
                     .skipFilePathBuilder()
                     .setHost('/var/trevio_images/chats')
-                    .download();
+                    .download();*/
 
                 await new SQL('trevio_chats.chats_messages_images', {
                   user_id:    image.user_id,
@@ -117,7 +117,7 @@ function run() {
                     .setDumpFolder('chats')
                     .parse();
               }
-            }*/
+            }
           }
 
           /*

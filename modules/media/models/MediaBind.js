@@ -1,5 +1,4 @@
 const { DataTypes, sequelize } = require('../../../database');
-
 const Media = require('./Media');
 
 const MediaBind = sequelize.define('MediaBind', {
@@ -21,6 +20,9 @@ const MediaBind = sequelize.define('MediaBind', {
   timestamps: false,
 });
 
-MediaBind.belongsTo(Media, {foreignKey: 'media_id', sourceKey: 'id'});
+MediaBind.belongsTo(Media, {
+  foreignKey: 'media_id',
+  sourceKey:  'id'
+});
 
 module.exports = MediaBind;

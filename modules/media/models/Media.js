@@ -1,6 +1,6 @@
 const { DataTypes, sequelize } = require('../../../database');
 
-module.exports = sequelize.define('Media', {
+const Media = sequelize.define('Media', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -14,15 +14,12 @@ module.exports = sequelize.define('Media', {
   created_at: {
     type: DataTypes.DATE,
   },
-
   path: {
     type: DataTypes.VIRTUAL,
     get() {
-      const filename = this.get('filename');
+      const filename = this.getDataValue('filename');
 
-      /*
-        Путь к оригинальному изображению.
-       */
+      // Путь к оригинальному изображению.
       return `/storage/media/${filename.substr(0, 1)}/${filename.substr(1, 2)}/${filename.substr(3, 2)}/${filename}`;
     }
   },
@@ -30,3 +27,5 @@ module.exports = sequelize.define('Media', {
   tableName: 'media',
   timestamps: false,
 });
+
+module.exports = Media;

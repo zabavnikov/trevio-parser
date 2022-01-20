@@ -1,26 +1,32 @@
-const argv = require('minimist')(process.argv.slice(2));
-
 const { SQL, Download } = require('../../classes');
-const { uploadDirForPermanentImages, dateToPath } = require('../../utils/pathBuilder');
 const { UPLOAD_DISK } = require('../../constants');
-const { v4 } = require('uuid');
+const { Sequelize } = require('../../database');
+const { uploadDirForPermanentImages, dateToPath } = require('../../utils/pathBuilder');
 
-const { Travel, User, Like, MediaBind } = require('../../models');
+const {
+  User,
+  Company,
+  Travel,
+  Media,
+  MediaBind
+} = require('../../models');
 
-const { AlbumsCount, NotesCount, ReviewsCount, QuestionsCount } = require('./subqueries');
+const {
+  AlbumsCount,
+  NotesCount,
+  ReviewsCount,
+  QuestionsCount
+} = require('./subqueries');
 
 const LikesParserPartial = require('../likes/likes-parser-partial');
 const ShareParserPartial = require('../share/share-parser-partial');
 
-let limit = 100,
-    offset = 0;
+let offset = 0
+    limit = 100;
 
 function run() {
   Travel
     .findAll({
-      order: [
-        ['id', 'ASC'],
-      ],
       attributes: {
         include: [
           AlbumsCount,
@@ -29,14 +35,30 @@ function run() {
           QuestionsCount
         ]
       },
-      include: { all: true, nested: true },
+      include: [
+        {
+          model: MediaBind,
+          include: [
+            { model: Media, required: false },
+          ]
+        },
+        {
+          model: User,
+          include: [
+            { model: Company, required: false, attributes: ['user_id'] },
+          ]
+        },
+      ],
+      where: {
+        isCompany: Sequelize.where(Sequelize.col('User.Company.user_id'), {
+          [Sequelize.Op.eq]: null
+        }),
+      },
       offset,
       limit,
     })
     .then(async travels => {
-      if (travels.length === 0) {
-        return
-      }
+      if (travels.length === 0) return;
 
       for (let travel of travels) {
         travel = travel.get();

@@ -1,46 +1,41 @@
 const { SQL, Download } = require('../../classes');
-const { uploadDirForPermanentImages } = require('../../utils/pathBuilder');
-const User = require('./models/User');
+const { User, Media, Company } = require('../../models');
 const { UPLOAD_DISK } = require('../../constants');
+const { uploadDirForPermanentImages } = require('../../utils/pathBuilder');
 
-let limit = 400, offset = 0;
+let offset = 0, limit = 500;
+
 function run() {
   User
     .findAll({
-      include: [{ all: true, nested: true }],
-      order: [
-        ['id', 'ASC'],
-      ],
       offset,
       limit,
     })
     .then(async users => {
-      if (users.length === 0) {
-        return;
-      }
+      if (users.length === 0) return;
 
       for (let user of users) {
         user = user.get();
 
-        const path = uploadDirForPermanentImages(user.id);
-        const hasAvatar = user.avatar > 0;
-
         const fields = {
-          id: user.id,
-          name: user.username,
-          email: user.email,
-          password: user.password,
-          description: user.description,
-          birthday: user.birthday,
-          gender: user.sex,
-          email_verified_at: user.created_at,
-          last_activity_at: user.last_activity,
-          created_at: user.created_at,
-          updated_at: user.updated_at,
+          id:                 user.id,
+          name:               user.name,
+          email:              user.email,
+          password:           user.password,
+          description:        user.description,
+          birthday:           user.birthday,
+          gender:             user.gender,
+          is_company:         user.Company ? true : false,
+          email_verified_at:  user.created_at,
+          last_activity_at:   user.last_activity_at,
+          created_at:         user.created_at,
+          updated_at:         user.updated_at,
         }
 
         // Парсим аватарку если есть.
-        if (hasAvatar) {
+        if (user.avatar > 0) {
+          const path = uploadDirForPermanentImages(user.id);
+
           fields.avatar = `/users/${path}/avatar.jpg`;
 
           /*await new Download('users', user.Medium.filename, `users/${path}`, 'avatar.jpg')

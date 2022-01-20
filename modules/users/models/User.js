@@ -1,13 +1,15 @@
+const moment = require('moment');
 const { DataTypes, sequelize } = require('../../../database');
-const Media = require('../../media/Media');
-const dateConverter = require('../../../utils/dateConverter');
+const { timestamps } = require('../../../utils');
+const Media = require('../../media/models/Media');
+const Company = require('./Company');
 
 const User = sequelize.define('User', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
   },
-  username: {
+  name: {
     type: DataTypes.STRING,
     field: 'nickname'
   },
@@ -41,51 +43,25 @@ const User = sequelize.define('User', {
   birthday: {
     type: DataTypes.STRING,
   },
-  sex: {
+  gender: {
     type: DataTypes.STRING,
+    field: 'sex',
   },
   confirmed: {
     type: DataTypes.INTEGER,
   },
-  last_activity: {
+  last_activity_at: {
     type: DataTypes.DATE,
+    field: 'last_activity',
     get() {
-      const date = this.getDataValue('created_at');
+      const date = this.getDataValue('last_activity');
 
-      if (date) {
-        // Example: 2017-11-04 22:08:32
-        return dateConverter(date);
-      }
-
-      return null;
+      return date
+          ? moment.utc(date).format('YYYY-MM-DD HH:mm:ss')
+          : null;
     }
   },
-  created_at: {
-    type: DataTypes.DATE,
-    get() {
-      const date = this.getDataValue('created_at');
-
-      if (date) {
-        // Example: 2017-11-04 22:08:32
-        return dateConverter(date);
-      }
-
-      return null;
-    }
-  },
-  updated_at: {
-    type: DataTypes.DATE,
-    get() {
-      const date = this.getDataValue('updated_at');
-
-      if (date) {
-        // Example: 2017-11-04 22:08:32
-        return dateConverter(date);
-      }
-
-      return null;
-    }
-  },
+  ...timestamps,
 }, {
   tableName: 'users',
   timestamps: false,
@@ -94,11 +70,19 @@ const User = sequelize.define('User', {
       confirmed: 1
     }
   },
+  include: [
+    { model: Media, required: false },
+    { model: Company, required: false, attributes: ['user_id'] }
+  ],
 });
 
 User.belongsTo(Media, {
   foreignKey: 'avatar',
   sourceKey: 'id',
+});
+
+User.hasOne(Company, {
+  foreignKey: 'user_id',
 });
 
 module.exports = User;

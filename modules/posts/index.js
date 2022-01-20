@@ -2,16 +2,8 @@ const getImagesFromString = require('../../utils/getImagesFromString');
 const {uploadDirForPermanentImages, dateToPath, getOriginalFilePath} = require('../../utils/pathBuilder');
 const imgproxy = require('../../utils/imgproxy');
 const {UPLOAD_DISK, DOMAIN} = require('../../constants');
+const Note = require('./models/Note');
 const { Download, SQL } = require('../../classes');
-
-const {
-  User,
-  Company,
-  Note,
-  Media,
-  MediaBind
-} = require('../../models');
-
 const LikesParserPartial = require('../likes/likes-parser-partial');
 const ShareParserPartial = require('../share/share-parser-partial');
 
@@ -26,22 +18,12 @@ let limit = 100,
 function run() {
   Note
       .findAll({
+        order: [
+          ['id', 'ASC'],
+        ],
         offset,
         limit,
-        include: [
-          {
-            model: MediaBind,
-            include: [
-              { model: Media, required: false },
-            ]
-          },
-          {
-            model: User,
-            include: [
-              { model: Company, required: false, attributes: ['user_id'] },
-            ]
-          },
-        ],
+        include: {all: true, nested: true},
       })
       .then(async notes => {
         if (notes.length === 0) return;
