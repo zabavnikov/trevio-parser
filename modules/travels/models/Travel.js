@@ -40,6 +40,12 @@ const Travel = sequelize.define('Travel', {
   date_end: {
     type: DataTypes.DATE,
   },
+  type: {
+    type: DataTypes.VIRTUAL,
+    get() {
+      return 'travels';
+    }
+  },
   ...dateFields,
 }, {
   tableName: 'travels',

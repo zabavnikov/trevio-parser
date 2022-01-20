@@ -1,11 +1,10 @@
-const argv = require('minimist')(process.argv.slice(2));
-
 const getImagesFromString = require('../../utils/getImagesFromString');
 const {uploadDirForPermanentImages, dateToPath, getOriginalFilePath} = require('../../utils/pathBuilder');
 const imgproxy = require('../../utils/imgproxy');
 const {UPLOAD_DISK, DOMAIN} = require('../../constants');
 const Note = require('./models/Note');
 const { Download, SQL } = require('../../classes');
+const LikesParserPartial = require('../likes/likes-parser-partial');
 
 let limit = 100,
     offset = 0,
@@ -107,6 +106,14 @@ function run() {
             }
           }
 
+          /*
+            ЛАЙКИ.
+           */
+          const likes = await LikesParserPartial('notes', `${note.type}_likes`, {
+            likes_id: note.id,
+            module_type: 2,
+          }, note);
+
           const insert = {
             id: note.id,
             chat_id: note.id,
@@ -116,6 +123,7 @@ function run() {
             title: note.title,
             text: `<p>${note.short_text}</p>${note.text}`,
             messages_count: note.messages_count,
+            likes_count: likes.length,
             created_at: note.created_at,
             updated_at: note.updated_at,
             deleted_at: note.deleted_at,

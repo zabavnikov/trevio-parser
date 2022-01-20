@@ -49,6 +49,13 @@ function run() {
         }
 
         // await new SQL('users', fields).parse();
+
+        await new SQL('wallets', {
+          user_id:    user.id,
+          balance:    300,
+        })
+            .setOutputFolder('users')
+            .parse();
       }
 
       offset += users.length;

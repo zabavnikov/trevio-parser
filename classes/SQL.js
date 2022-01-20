@@ -30,6 +30,15 @@ class SQL {
   }
 
   /**
+   * @param folder
+   * @returns {SQL}
+   */
+  setOutputFolder(folder) {
+    this.folder = folder;
+    return this;
+  }
+
+  /**
    * @param filename
    * @returns {SQL}
    */
@@ -89,9 +98,13 @@ class SQL {
       await fs.writeFileSync(file, '');
     }
 
+    const columns = Object.keys(this.fields).map(column => {
+      return '`' + column + '`';
+    }).join(', ');
+
     await fs.appendFileSync(
         file,
-        `INSERT INTO ${this.tableName} (${Object.keys(this.fields).join(', ')}) VALUES (${Object.values(this.fields).join(', ')});\r\n`,
+        `INSERT INTO ${this.tableName} (${columns}) VALUES (${Object.values(this.fields).join(', ')});\r\n`,
         function (error) {
           if (error) return console.log(error);
         });
