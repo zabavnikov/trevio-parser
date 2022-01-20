@@ -4,8 +4,6 @@ const { Sequelize } = require('../../database');
 const { uploadDirForPermanentImages, dateToPath } = require('../../utils/pathBuilder');
 
 const {
-  User,
-  Company,
   Travel,
   Media,
   MediaBind
@@ -42,17 +40,9 @@ function run() {
             { model: Media, required: false },
           ]
         },
-        {
-          model: User,
-          include: [
-            { model: Company, required: false, attributes: ['user_id'] },
-          ]
-        },
       ],
       where: {
-        isCompany: Sequelize.where(Sequelize.col('User.Company.user_id'), {
-          [Sequelize.Op.eq]: null
-        }),
+        company_id: null,
       },
       offset,
       limit,

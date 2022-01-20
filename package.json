@@ -5,7 +5,7 @@
     "notes": "node ./modules/notes/index.js",
     "chats": "node ./modules/chats/index.js",
     "subscriptions": "node ./modules/subscriptions/index.js",
-    "share": "node ./modules/share/index.js"
+    "notes-posts": "node ./modules/posts/notes-to-posts.js"
   },
   "dependencies": {
     "axios": "^0.24.0",

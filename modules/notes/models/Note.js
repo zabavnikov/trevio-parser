@@ -14,6 +14,9 @@ const Note = sequelize.define('Note', {
   travel_id: {
     type: DataTypes.INTEGER,
   },
+  company_id: {
+    type: DataTypes.INTEGER,
+  },
   note_type_id: {
     type: DataTypes.INTEGER,
   },
@@ -24,7 +27,12 @@ const Note = sequelize.define('Note', {
   type: {
     type: DataTypes.VIRTUAL,
     get() {
-      const typeId = parseInt(this.getDataValue('note_type_id'));
+      const typeId    = parseInt(this.getDataValue('note_type_id'));
+      const companyId = parseInt(this.getDataValue('company_id'));
+
+      if (companyId > 0) {
+        return 'posts';
+      }
 
       if (typeId === 4) {
         return 'albums';
@@ -99,7 +107,7 @@ const Note = sequelize.define('Note', {
       }),
     },
     include: [
-      {model: User}
+      { model: User }
     ]
   },
 });
@@ -112,9 +120,7 @@ Note.hasMany(MediaBind, {
   foreignKey: 'module_id',
   scope: {
     module_type_id: 2,
-    tag: {
-      [Sequelize.Op.in]: ['cover', 'gallery']
-    },
+    tag: ['cover', 'gallery'],
   },
 });
 

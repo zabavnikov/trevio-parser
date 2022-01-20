@@ -11,6 +11,9 @@ const Travel = sequelize.define('Travel', {
   user_id: {
     type: DataTypes.INTEGER,
   },
+  company_id: {
+    type: DataTypes.INTEGER,
+  },
   title: {
     type: DataTypes.STRING,
   },
@@ -42,7 +45,9 @@ const Travel = sequelize.define('Travel', {
   type: {
     type: DataTypes.VIRTUAL,
     get() {
-      return 'travels';
+      return parseInt(this.getDataValue('company_id')) > 0
+          ? 'posts'
+          : 'travels';
     }
   },
   ...dateFields,

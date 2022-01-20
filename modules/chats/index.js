@@ -6,20 +6,17 @@ const ChatMessage = require('./models/ChatMessage');
 const ChatMessageImage = require('./models/ChatMessageImage');
 const ChatMessageLike = require('./models/ChatMessageLike');
 
-let limit = 100,
-    offset = 0;
+let offset = 0,
+    limit = 100;
 
 function run() {
   Note
     .findAll({
-      order: [
-        ['id', 'ASC'],
-      ],
-      offset,
-      limit,
       include: [
         { model: User },
       ],
+      offset,
+      limit,
     })
     .then(async notes => {
       if (notes.length === 0) return;
@@ -34,7 +31,7 @@ function run() {
           where: {
             chat_id: note.id
           }
-        })
+        });
 
         if (messages.length) {
           const members = {};
