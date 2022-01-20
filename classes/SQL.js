@@ -7,7 +7,7 @@ class SQL {
   constructor(tableName, fields) {
     this.tableName    = tableName;
     this.fields       = fields;
-    this.allowedTags  = [];
+    this.allowedTags  = new Set([]);
     this.folder       = tableName;
     this.filename     = tableName;
   }
@@ -67,9 +67,8 @@ class SQL {
             fields[key] = value.substr(0, 1000);
           }
 
-          // <a>
-          if (this.allowedTags.size === 0) {
-            value = value.replace(new RegExp(/("|')/, 'gm'), ''); // Удаляем кавычки.
+          if (! this.allowedTags.size) {
+            value = value.replace(new RegExp(/("|')/, 'gm'), '');
           }
 
           // Удаляем &nbsp;.

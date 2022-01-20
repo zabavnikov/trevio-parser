@@ -43,14 +43,16 @@ function run() {
         if (hasAvatar) {
           fields.avatar = `/users/${path}/avatar.jpg`;
 
-          await new Download('users', user.Medium.filename, `users/${path}`, 'avatar.jpg')
+          /*await new Download('users', user.Medium.filename, `users/${path}`, 'avatar.jpg')
               .setWidthHeight(200, 200)
-              .download();
+              .download();*/
         }
 
-        // await new SQL('users', fields).parse();
+        await new SQL('trevio.users', fields)
+            .setOutputFolder('users')
+            .parse();
 
-        await new SQL('wallets', {
+        await new SQL('trevio.wallets', {
           user_id:    user.id,
           balance:    300,
         })
