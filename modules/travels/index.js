@@ -8,7 +8,8 @@ const { v4 } = require('uuid');
 
 const { Travel, User, Like, MediaBind } = require('../../models');
 
-const { AlbumsCount, NotesCount, ReviewsCount, QuestionsCount } = require('./subqueries')
+const { AlbumsCount, NotesCount, ReviewsCount, QuestionsCount } = require('./subqueries');
+const LikesParserPartial = require('./parser-partials/likes');
 
 let limit = 100,
     offset = 0;
@@ -56,7 +57,12 @@ function run() {
       for (let travel of travels) {
         travel = travel.get();
 
-        const likeCount = 0; // travel.Likes.length;
+        /*
+          ЛАЙКИ.
+         */
+        const likesCount = await LikesParserPartial({
+          likes_id: travel.id
+        });
 
         await new SQL('travels', {
           id: travel.id,
@@ -68,7 +74,7 @@ function run() {
           reviews_count: travel.reviews_count,
           albums_count: travel.albums_count,
           questions_count: travel.questions_count,
-          likes_count: likeCount,
+          likes_count: likesCount,
           date_start: travel.date_start,
           date_end: travel.date_end,
           created_at: travel.created_at,
@@ -129,7 +135,7 @@ function run() {
         /*/*
          * Обложки путешествий.
          */
-        const path = uploadDirForPermanentImages(travel.user_id);
+        /*const path = uploadDirForPermanentImages(travel.user_id);
         const outputPath = `users/${path}/travels/${dateToPath(travel.created_at)}`;
         const cover = travel.MediaBind
             ? travel.MediaBind.Medium
@@ -147,7 +153,7 @@ function run() {
           await new Download('travels', cover.filename, outputPath, filename)
               .setWidthHeight(1024, 768)
               .download();
-        }
+        }*/
       }
 
       offset += travels.length;
