@@ -1,11 +1,12 @@
 const createHmac = require('create-hmac');
 const {
-  IMGPROXY_KEY,
+  IMGPROXY_SECRET,
   IMGPROXY_SALT
 } = require('../constants');
 
 const urlSafeBase64 = (string) => {
-  return Buffer.from(string).toString('base64')
+  return Buffer.from(string)
+      .toString('base64')
       .replace(/=/g, '')
       .replace(/\+/g, '-')
       .replace(/\//g, '_')
@@ -13,7 +14,7 @@ const urlSafeBase64 = (string) => {
 
 const hexDecode = (hex) => Buffer.from(hex, 'hex');
 
-const signature = (salt, target, secret) => {
+const signature = (secret, salt, target) => {
   const hmac = createHmac('sha256', hexDecode(secret))
       .update(hexDecode(salt))
       .update(target);
@@ -23,8 +24,7 @@ const signature = (salt, target, secret) => {
 
 module.exports = (url) => {
   const encodedUrl = urlSafeBase64(`https://images.treviodev.ru/${url}`);
-  const path = `resize:fit:1024/${encodedUrl}.jpg`;
-  const sig = signature(IMGPROXY_SALT, path, IMGPROXY_KEY);
+  const path = `/resize:fit:1024/${encodedUrl}.jpg`;
 
-  return `https://images.treviodev.ru/resize/${sig}/${path}`;
+  return `https://images.treviodev.ru/resize/${signature(IMGPROXY_SECRET, IMGPROXY_SALT, path)}${path}`;
 }

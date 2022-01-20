@@ -1,9 +1,9 @@
 const getImagesFromString = require('../../utils/getImagesFromString');
 const {uploadDirForPermanentImages, dateToPath, getOriginalFilePath} = require('../../utils/pathBuilder');
-const imgproxy = require('../../utils/imgproxy');
-const {UPLOAD_DISK, DOMAIN} = require('../../constants');
+const { imgproxy } = require('../../utils');
 const { Sequelize } = require('../../database');
 const { Download, SQL } = require('../../classes');
+const { UPLOAD_DISK, DOMAIN } = require('../../constants');
 
 const {
   Note,
@@ -127,7 +127,7 @@ function run() {
               const regExp = new RegExp(getOriginalFilePath(image.filename), 'g');
 
               if (regExp.test(note.text)) {
-                note.text = note.text.replace(regExp, `${DOMAIN}/${image.path}`);
+                note.text = note.text.replace(regExp, imgproxy(image.path));
               }
             }
 
