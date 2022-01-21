@@ -119,9 +119,9 @@ async function run() {
             const fields = {...image};
             delete fields.filename;
 
-            await new Download('posts', image.filename, fullPath, `${post.id}-${image.filename}`)
+            /*await new Download('posts', image.filename, fullPath, `${post.id}-${image.filename}`)
                 .setWidthHeight(640, 480)
-                .download();
+                .download();*/
 
             if (post.type === 'notes' || post.type === 'reviews') {
               const regExp = new RegExp(getOriginalFilePath(image.filename), 'g');

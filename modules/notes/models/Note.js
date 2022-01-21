@@ -85,6 +85,8 @@ const Note = sequelize.define('Note', {
             /<iframe.*?src="(.*?)"[^>]+><\/iframe>/g,
             '<t-embed src="$1" provider="youtube"></t-embed>'
           )
+          .replace(/&nbsp;/g, '')
+          .replace(/<p>\s</p>/g, '')
           .trim();
       }
 
