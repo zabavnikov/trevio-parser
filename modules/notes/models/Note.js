@@ -88,7 +88,7 @@ const Note = sequelize.define('Note', {
           .trim();
       }
 
-      return text;
+      return '';
     }
   },
   message_count: {

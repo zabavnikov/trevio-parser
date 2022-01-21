@@ -1,10 +1,17 @@
 const getImagesFromString = require('../../utils/getImagesFromString');
 const {uploadDirForPermanentImages, dateToPath, getOriginalFilePath} = require('../../utils/pathBuilder');
+const { imgproxy } = require('../../utils');
 
 const {UPLOAD_DISK, DOMAIN} = require('../../constants');
 const { Download, SQL } = require('../../classes');
-const { Sequelize } = require('../../database');
-const { Note, User, MediaBind, Media, Company } = require('../../models');
+
+const {
+  Note,
+  User,
+  MediaBind,
+  Media,
+  Company
+} = require('../../models');
 
 const LikesParserPartial = require('../likes/likes-parser-partial');
 const ShareParserPartial = require('../share/share-parser-partial');
@@ -14,6 +21,8 @@ let limit = 100,
 globalImageID = 0;
 
 async function run() {
+  const companies = await Company.findAll();
+
   Note
     .findAll({
       offset,
@@ -27,9 +36,7 @@ async function run() {
         },
       ],
       where: {
-        company_id: [
-          [Sequelize.Op.gt]: 0
-        ],
+        user_id: companies.map(company => company.user_id),
       },
     })
     .then(async posts => {
@@ -112,16 +119,18 @@ async function run() {
             const fields = {...image};
             delete fields.filename;
 
-            /*await new Download('posts', image.filename, fullPath, `${post.id}-${image.filename}`)
+            await new Download('posts', image.filename, fullPath, `${post.id}-${image.filename}`)
                 .setWidthHeight(640, 480)
-                .download();*/
+                .download();
 
             if (post.type === 'notes' || post.type === 'reviews') {
               const regExp = new RegExp(getOriginalFilePath(image.filename), 'g');
 
               if (regExp.test(post.text)) {
-                post.text = post.text.replace(regExp, `${DOMAIN}/${image.path}`);
+                post.text = post.text.replace(regExp, imgproxy(image.path));
               }
+            } else if (post.type === 'albums') {
+              post.text += `<p><ce-image src="${imgproxy(image.path)}" id="${image.id}"></ce-image></p>`
             }
 
             await new SQL('trevio.posts_images', fields)

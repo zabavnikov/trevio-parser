@@ -27,7 +27,7 @@ const Travel = sequelize.define('Travel', {
         return value.trim().substr(0, 1000);
       }
 
-      return null;
+      return '';
     }
   },
   status: {
