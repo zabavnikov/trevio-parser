@@ -177,7 +177,7 @@ async function run() {
           event_id: 1,
           emitter_id: note.user_id,
           recipient_id: note.user_id,
-          travel_id: note.id,
+          travel_id: note.travel_id,
           model_type: note.type,
           model_id: note.id,
           weight: 0.0120,
