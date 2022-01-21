@@ -18,7 +18,7 @@ const ShareParserPartial = require('../share/share-parser-partial');
 
 let limit = 100,
     offset = 0
-globalImageID = 0;
+globalImageID = 26;
 
 async function run() {
   const companies = await Company.findAll();
@@ -119,9 +119,9 @@ async function run() {
             const fields = {...image};
             delete fields.filename;
 
-            /*await new Download('posts', image.filename, fullPath, `${post.id}-${image.filename}`)
+            await new Download('posts', image.filename, fullPath, `${post.id}-${image.filename}`)
                 .setWidthHeight(640, 480)
-                .download();*/
+                .download();
 
             if (post.type === 'notes' || post.type === 'reviews') {
               const regExp = new RegExp(getOriginalFilePath(image.filename), 'g');
@@ -158,7 +158,7 @@ async function run() {
 
         await new SQL('trevio.posts', insert)
             .setOutputFolder('posts')
-            .setAllowedTags(['p', 'ce-image', 'a', 'iframe'])
+            .setAllowedTags(['p', 'ce-image', 'a', 'ce-embed'])
             .parse();
 
         await new SQL('trevio.activity', {

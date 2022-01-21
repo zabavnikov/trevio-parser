@@ -5,7 +5,8 @@
     "notes": "node ./modules/notes/index.js",
     "chats": "node ./modules/chats/index.js",
     "subscriptions": "node ./modules/subscriptions/index.js",
-    "notes-posts": "node ./modules/posts/notes-to-posts.js"
+    "notes-posts": "node ./modules/posts/notes-to-posts.js",
+    "travels-posts": "node ./modules/posts/travels-to-posts.js"
   },
   "dependencies": {
     "axios": "^0.24.0",
