@@ -1,15 +1,23 @@
 const { SQL, Download } = require('../../classes');
 const { uploadDirForPermanentImages } = require('../../utils/pathBuilder');
-const Note = require('../notes/models/Note');
-const User = require('../users/models/User');
 const ChatMessage = require('./models/ChatMessage');
 const ChatMessageImage = require('./models/ChatMessageImage');
 const ChatMessageLike = require('./models/ChatMessageLike');
 
+const {
+  User,
+  Company,
+  Note,
+} = require('../../models');
+
 let offset = 0,
     limit = 100;
 
-function run() {
+async function run() {
+  let companies = await Company.findAll();
+
+  companies = companies.map(company => company.user_id);
+
   Note
     .findAll({
       include: [
@@ -23,6 +31,10 @@ function run() {
 
       for (let note of notes) {
         note = note.get();
+
+        if (companies.indexOf(note.user_id) !== -1) {
+          note.type = 'posts';
+        }
 
         let lastMessageId = null;
         let lastMessageAt = null;

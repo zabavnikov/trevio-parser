@@ -9,15 +9,8 @@ const Company = sequelize.define('Company', {
     type: DataTypes.INTEGER,
   },
 }, {
-  tableName: 'poi',
+  tableName: 'poi_owners',
   timestamps: false,
-  defaultScope: {
-    where: {
-      user_id: {
-        [Sequelize.Op.gt]: 0
-      }
-    },
-  },
 });
 
 module.exports = Company;

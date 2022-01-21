@@ -7,6 +7,7 @@ const { UPLOAD_DISK, DOMAIN } = require('../../constants');
 
 const {
   Note,
+  Company,
   Media,
   MediaBind
 } = require('../../models');
@@ -22,7 +23,9 @@ let offset = 0,
       albums: 0,
     }
 
-function run() {
+async function run() {
+  const companies = await Company.findAll();
+
   Note
     .findAll({
       include: [
@@ -34,7 +37,9 @@ function run() {
         },
       ],
       where: {
-        company_id: null,
+        user_id: {
+          [Sequelize.Op.notIn]: companies.map(company => company.user_id)
+        },
       },
       offset,
       limit,

@@ -5,6 +5,7 @@ const { uploadDirForPermanentImages, dateToPath } = require('../../utils/pathBui
 
 const {
   Travel,
+  Company,
   Media,
   MediaBind
 } = require('../../models');
@@ -22,7 +23,9 @@ const ShareParserPartial = require('../share/share-parser-partial');
 let offset = 0
     limit = 100;
 
-function run() {
+async function run() {
+  const companies = await Company.findAll();
+
   Travel
     .findAll({
       attributes: {
@@ -42,7 +45,9 @@ function run() {
         },
       ],
       where: {
-        company_id: null,
+        user_id: {
+          [Sequelize.Op.notIn]: companies.map(company => company.user_id)
+        },
       },
       offset,
       limit,
