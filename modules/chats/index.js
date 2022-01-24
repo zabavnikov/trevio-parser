@@ -113,7 +113,7 @@ async function run() {
             if (images.length) {
               for (const image of images) {
                 // добавить в путь дату, см загрузку в чатах на тестовом.
-                const path = uploadDirForPermanentImages(image.id);
+                const path = uploadDirForPermanentImages(image.id) + `/${dateToPath(note.created_at)}`;
 
                 /*await new Download('chats', image.path, `/chats/${path}`, `${image.id}.jpg`)
                     .setWidthHeight(640, 480)

@@ -172,8 +172,14 @@ async function run() {
             )
             .parse();
 
+        let activityKey = `emitter${note.user_id}${note.type}${note.id}`;
+
+        if (note.travel_id > 0) {
+          activityKey = `emitter${note.user_id}travels${note.travel_id}${note.type}${note.id}`;
+        }
+
         await new SQL(`trevio.activity`, {
-          key: `emitter${note.user_id}${note.type}${note.id}`,
+          key: activityKey,
           event_id: 1,
           emitter_id: note.user_id,
           recipient_id: note.user_id,
