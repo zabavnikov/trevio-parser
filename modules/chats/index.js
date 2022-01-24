@@ -29,8 +29,12 @@ async function run() {
     .then(async notes => {
       if (notes.length === 0) return;
 
+      let chatId = 0;
+
       for (let note of notes) {
         note = note.get();
+
+        chatId++;
 
         if (companies.indexOf(note.user_id) !== -1) {
           note.type = 'posts';
@@ -52,7 +56,7 @@ async function run() {
             await new SQL('trevio_chats.chats_messages', {
               id:             message.id,
               user_id:        message.user_id,
-              chat_id:        note.id,
+              chat_id:        chatId,
               branch_id:      message.branch_id,
               parent_id:      message.parent_id,
               text:           message.text,
@@ -147,7 +151,6 @@ async function run() {
         }
 
         await new SQL('trevio_chats.chats', {
-          id:               note.id,
           user_id:          note.user_id,
           type:             'public',
           model_type:       note.type,
