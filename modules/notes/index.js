@@ -145,7 +145,6 @@ async function run() {
 
         const insert = {
           id: note.id,
-          chat_id: note.id,
           user_id: note.user_id,
           travel_id: note.travel_id,
           cover_id: note.cover_id,

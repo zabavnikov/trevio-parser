@@ -94,7 +94,6 @@ async function run() {
 
         const fields = {
           id: travel.id,
-          chat_id: travel.id,
           user_id: travel.user_id,
           title: travel.title,
           text: `<p>${travel.short_text}</p>${travel.text}`,

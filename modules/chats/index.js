@@ -1,5 +1,5 @@
 const { SQL, Download } = require('../../classes');
-const { uploadDirForPermanentImages } = require('../../utils/pathBuilder');
+const { uploadDirForPermanentImages, dateToPath } = require('../../utils/pathBuilder');
 const ChatMessage = require('./models/ChatMessage');
 const ChatMessageImage = require('./models/ChatMessageImage');
 const ChatMessageLike = require('./models/ChatMessageLike');
@@ -139,7 +139,7 @@ async function run() {
           if (Object.keys(members).length) {
             for (const memberId in members) {
               await new SQL('trevio_chats.chats_members', {
-                chat_id:            note.id,
+                chat_id:            chatId,
                 user_id:            memberId,
                 chat_joined_at:     members[memberId],
                 chat_last_visit_at: members[memberId],

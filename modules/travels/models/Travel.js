@@ -23,36 +23,11 @@ const Travel = sequelize.define('Travel', {
     get() {
       let text = this.getDataValue('text');
 
-      if (text) {
-        text = text
-            .replace(
-                /src="\/imagecache\/(.*?)"/g,
-                'src="https://trevio.ru/imagecache/$1"'
-            ).replace(
-                /<img(.*?)>/g,
-                '<ce-image$1></ce-image>'
-            ).replace(
-                /<iframe.*?src="(.*?)"[^>]+><\/iframe>/g,
-                '<ce-embed src="$1"></ce-embed>'
-            )
-            .replace(/&nbsp;/g, '')
-            .replace(/<p>\s<\/p>/g, '')
-            .trim();
+      if (text && text.length > 997) {
+        text = text.substr(0, 997);
 
-        const embeds = text.match(/<ce-embed.*?src="(.*?)"><\/ce-embed>/g);
-
-        if (embeds) {
-          const youtubeRegExp =
-              /^(?:(?:https?:)?\/\/)?(?:www\.)?(?:m\.)?(?:youtu(?:be)?\.com\/(?:v\/|embed\/|watch(?:\/|\?v=))|youtu\.be\/)((?:\w|-){11})(?:\S+)?$/;
-
-          embeds.forEach(embed => {
-            const item = /<ce-embed.*?src="(.*?)"><\/ce-embed>/.exec(embed);
-            const videoId = youtubeRegExp.exec(item[1]);
-
-            if (videoId) {
-              text = text.replace(embed, `<ce-embed video-id="${videoId[1]}" provider="youtube"></ce-embed>`)
-            }
-          });
+        if (text[text.length - 1] !== '.') {
+          text[text.length - 1] += '.';
         }
 
         return text;

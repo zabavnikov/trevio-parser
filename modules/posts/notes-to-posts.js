@@ -142,7 +142,6 @@ async function run() {
 
         const insert = {
           id: post.id,
-          chat_id: post.id,
           user_id: post.user_id,
           cover_id: post.cover_id,
           title: post.title,

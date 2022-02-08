@@ -94,6 +94,7 @@ async function run() {
           published_at: travel.published_at,
         })
         .setOutputFolder('travels')
+        .setAllowedTags([])
         .setFilename('trevio.travels')
         .parse();
 
