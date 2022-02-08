@@ -31,20 +31,11 @@ function run() {
           }
         }
 
-        if (user.description !== null) {
-          const substrByWords = (string) => {
-            let result = string.split(' ', 60);
-            let lastWord = result[result.length - 1];
+        if (user.description && user.description.length > 499) {
+          user.description = user.description.substr(0, 499);
 
-            if (lastWord[lastWord.length - 1] !== '.') {
-              result[result.length - 1] += '...';
-            }
-
-            return result.join(' ');
-          }
-
-          if (user.description.length > 500) {
-            user.description = substrByWords(user.description);
+          if (user.description[user.description.length - 1] !== '.') {
+            user.description[user.description.length - 1] += '.';
           }
         }
 
