@@ -168,7 +168,7 @@ async function run() {
           emitter_id: post.user_id,
           recipient_id: post.user_id,
           travel_id: post.id,
-          model_type: post.type,
+          model_type: 'posts',
           model_id: post.id,
           weight: 0.0120,
           created_at: post.created_at,
