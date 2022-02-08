@@ -29,12 +29,10 @@ async function run() {
     .then(async notes => {
       if (notes.length === 0) return;
 
-      let chatId = 0;
+      let newChatId = 1;
 
       for (let note of notes) {
         note = note.get();
-
-        chatId++;
 
         if (companies.indexOf(note.user_id) !== -1) {
           note.type = 'posts';
@@ -50,13 +48,14 @@ async function run() {
         });
 
         if (messages.length) {
+
           const members = {};
 
           for (const message of messages) {
             await new SQL('trevio_chats.chats_messages', {
               id:             message.id,
               user_id:        message.user_id,
-              chat_id:        chatId,
+              chat_id:        newChatId,
               branch_id:      message.branch_id,
               parent_id:      message.parent_id,
               text:           message.text,
@@ -75,8 +74,10 @@ async function run() {
             /*
               УЧАСТНИКИ ЧАТА.
              */
-            if (! members.hasOwnProperty(message.user_id)) {
-              members[message.user_id] = message.created_at;
+            const memberId = parseInt(message.user_id);
+
+            if (! members.hasOwnProperty(memberId)) {
+              members[memberId] = message.created_at;
             }
 
             /*
@@ -139,7 +140,7 @@ async function run() {
           if (Object.keys(members).length) {
             for (const memberId in members) {
               await new SQL('trevio_chats.chats_members', {
-                chat_id:            chatId,
+                chat_id:            newChatId,
                 user_id:            memberId,
                 chat_joined_at:     members[memberId],
                 chat_last_visit_at: members[memberId],
@@ -164,6 +165,8 @@ async function run() {
         })
             .setDumpFolder('chats')
             .parse();
+
+        newChatId++;
       }
 
       offset += notes.length;
