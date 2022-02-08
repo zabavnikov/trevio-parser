@@ -1,5 +1,5 @@
 const { SQL, Download } = require('../../classes');
-const { User, Media, Company } = require('../../models');
+const { Company, Media, User } = require('../../models');
 const { UPLOAD_DISK } = require('../../constants');
 const { uploadDirForPermanentImages } = require('../../utils/pathBuilder');
 
@@ -10,12 +10,26 @@ function run() {
     .findAll({
       offset,
       limit,
+      include: [
+        { model: Media },
+        { model: Company }
+      ],
     })
     .then(async users => {
       if (users.length === 0) return;
 
       for (let user of users) {
         user = user.get();
+
+        const isCompany = user.Company !== null;
+
+        if (isCompany) {
+          user.name = user.Company.name;
+
+          if (user.Company.description.length) {
+            user.description = user.Company.description;
+          }
+        }
 
         const fields = {
           id:                 user.id,
@@ -25,7 +39,7 @@ function run() {
           description:        user.description,
           birthday:           user.birthday,
           gender:             user.gender,
-          is_company:         user.Company ? true : false,
+          is_company:         isCompany,
           email_verified_at:  user.created_at,
           last_activity_at:   user.last_activity_at,
           created_at:         user.created_at,

@@ -1,4 +1,4 @@
-const { DataTypes, Sequelize, sequelize } = require('../../../database');
+const { DataTypes, sequelize } = require('../../../database');
 
 const Company = sequelize.define('Company', {
   id: {
@@ -8,8 +8,14 @@ const Company = sequelize.define('Company', {
   user_id: {
     type: DataTypes.INTEGER,
   },
+  name: {
+    type: DataTypes.STRING,
+  },
+  description: {
+    type: DataTypes.STRING,
+  },
 }, {
-  tableName: 'poi_owners',
+  tableName: 'poi',
   timestamps: false,
 });
 

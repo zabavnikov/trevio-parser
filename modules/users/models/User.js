@@ -70,10 +70,6 @@ const User = sequelize.define('User', {
       confirmed: 1
     }
   },
-  include: [
-    { model: Media, required: false },
-    { model: Company, required: false, attributes: ['user_id'] }
-  ],
 });
 
 User.belongsTo(Media, {

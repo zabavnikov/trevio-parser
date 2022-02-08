@@ -101,6 +101,7 @@ async function run() {
           messages_count: travel.messages_count,
           likes_count: likes.length,
           share_count: share.length,
+          images_count: cover ? 1 : 0,
           created_at: travel.created_at,
           updated_at: travel.updated_at,
           deleted_at: travel.deleted_at,

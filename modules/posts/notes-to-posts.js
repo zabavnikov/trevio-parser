@@ -150,6 +150,7 @@ async function run() {
           messages_count: post.messages_count,
           likes_count: likes.length,
           share_count: share.length,
+          images_count: imageRepository.length,
           created_at: post.created_at,
           updated_at: post.updated_at,
           deleted_at: post.deleted_at,

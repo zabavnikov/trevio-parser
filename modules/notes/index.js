@@ -89,7 +89,7 @@ async function run() {
 
             globalImageID[note.type]++;
 
-            if (MediaBind.dataValues.tag == 'cover' && !note.cover_id) {
+            if (MediaBind.dataValues.tag === 'cover' && !note.cover_id) {
               note.cover_id = globalImageID[note.type];
             }
           }
@@ -154,6 +154,7 @@ async function run() {
           messages_count: note.messages_count,
           likes_count: likes.length,
           share_count: share.length,
+          images_count: imageRepository.length,
           created_at: note.created_at,
           updated_at: note.updated_at,
           deleted_at: note.deleted_at,
