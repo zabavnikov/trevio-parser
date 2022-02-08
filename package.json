@@ -9,10 +9,10 @@
     "travels-posts": "node ./modules/posts/travels-to-posts.js"
   },
   "dependencies": {
-    "axios": "^0.24.0",
+    "axios": "^0.25.0",
     "create-hmac": "^1.1.7",
     "jsdom": "^19.0.0",
-    "locutus": "^2.0.15",
+    "locutus": "^2.0.16",
     "lodash": "^4.17.21",
     "md5": "^2.3.0",
     "minimist": "^1.2.5",
@@ -20,10 +20,10 @@
     "mysql2": "^2.3.3",
     "request": "^2.88.2",
     "request-promise": "^4.2.6",
-    "sequelize": "^6.13.0",
-    "sharp": "^0.29.3",
+    "sequelize": "^6.15.1",
+    "sharp": "^0.30.0",
     "striptags": "^4.0.0-alpha.2",
-    "superagent": "^7.0.2",
+    "superagent": "^7.1.1",
     "uuid": "^8.3.2"
   }
 }

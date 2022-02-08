@@ -124,12 +124,12 @@ aws4@^1.8.0:
   resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.9.1.tgz#7e33d8f7d449b3f673cd72deb9abdc552dbe528e"
   integrity sha512-wMHVg2EOHaMRxbzgFJ9gtjOOCrI80OHLG14rxi28XwOW8ux6IiEbRCGGGqCtdAIg4FQCbW20k9RsT4y3gJlFug==
 
-axios@^0.24.0:
-  version "0.24.0"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-0.24.0.tgz#804e6fa1e4b9c5288501dd9dff56a7a0940d20d6"
-  integrity sha512-Q6cWsys88HoPgAaFAVUb0WpPk0O8iTeisR9IMqy9G8AbO4NlpVknrnQS03zzF9PGAWgO3cgletO3VjV/P7VztA==
+axios@^0.25.0:
+  version "0.25.0"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-0.25.0.tgz#349cfbb31331a9b4453190791760a8d35b093e0a"
+  integrity sha512-cD8FOb0tRH3uuEe6+evtAbgJtfxr7ly3fQjYcMcuPlgkwVS9xboaVIpcDV+cYQe+yGykgwZCs1pzjntcGa6l5g==
   dependencies:
-    follow-redirects "^1.14.4"
+    follow-redirects "^1.14.7"
 
 base64-js@^1.3.1:
   version "1.5.1"
@@ -233,7 +233,7 @@ color-string@^1.9.0:
     color-name "^1.0.0"
     simple-swizzle "^0.2.2"
 
-color@^4.0.1:
+color@^4.2.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/color/-/color-4.2.0.tgz#0c782459a3e98838ea01e4bc0fb43310ca35af78"
   integrity sha512-hHTcrbvEnGjC7WBMk6ibQWFVDgEFTVmjrz2Q5HlU6ltwxv0JJN2Z8I7uRbWeQLF04dikxs8zgyZkazRJvSMtyQ==
@@ -373,10 +373,10 @@ denque@^2.0.1:
   resolved "https://registry.yarnpkg.com/denque/-/denque-2.0.1.tgz#bcef4c1b80dc32efe97515744f21a4229ab8934a"
   integrity sha512-tfiWc6BQLXNLpNiR5iGd0Ocu3P3VpxfzFiqubLgMfhfOw9WyvgJBd46CClNn9k3qfbjvT//0cf7AlYRX/OslMQ==
 
-detect-libc@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/detect-libc/-/detect-libc-1.0.3.tgz#fa137c4bd698edf55cd5cd02ac559f91a4c4ba9b"
-  integrity sha1-+hN8S9aY7fVc1c0CrFWfkaTEups=
+detect-libc@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/detect-libc/-/detect-libc-2.0.0.tgz#c528bc09bc6d1aa30149228240917c225448f204"
+  integrity sha512-S55LzUl8HUav8l9E2PBTlC5PAJrHK7tkM+XXFGD+fbsbkTzhCpG6K05LxJcUOEWzMa4v6ptcMZ9s3fOdJDu0Zw==
 
 dezalgo@1.0.3:
   version "1.0.3"
@@ -480,7 +480,7 @@ fast-safe-stringify@^2.1.1:
   resolved "https://registry.yarnpkg.com/fast-safe-stringify/-/fast-safe-stringify-2.1.1.tgz#c406a83b6e70d9e35ce3b30a81141df30aeba884"
   integrity sha512-W+KJc2dmILlPplD/H4K9l9LcAHAfPtP6BY84uVLXQ6Evcz9Lcg33Y2z1IVblT6xdY54PXYVHEv+0Wpq8Io6zkA==
 
-follow-redirects@^1.14.4:
+follow-redirects@^1.14.7:
   version "1.14.7"
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.14.7.tgz#2004c02eb9436eee9a21446a6477debf17e81685"
   integrity sha512-+hbxoLbFMbRKDwohX8GkTataGqO6Jb7jGwpAlwgy2bIz25XtRm7KEzJM76R1WiNT5SwZkX4Y75SwBolkpmE7iQ==
@@ -792,10 +792,10 @@ levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
-locutus@^2.0.15:
-  version "2.0.15"
-  resolved "https://registry.yarnpkg.com/locutus/-/locutus-2.0.15.tgz#d75b9100713aaaf30be8b38ed6543910498c0db0"
-  integrity sha512-2xWC4RkoAoCVXEb/stzEgG1TNgd+mrkLBj6TuEDNyUoKeQ2XzDTyJUC23sMiqbL6zJmJSP3w59OZo+zc4IBOmA==
+locutus@^2.0.16:
+  version "2.0.16"
+  resolved "https://registry.yarnpkg.com/locutus/-/locutus-2.0.16.tgz#1da15532f1d735712a27e35a1caf0ccb7041f6b3"
+  integrity sha512-pGfl6Hb/1mXLzrX5kl5lH7gz25ey0vwQssZp8Qo2CEF59di6KrAgdFm+0pW8ghLnvNzzJGj5tlWhhv2QbK3jeQ==
 
 lodash@^4.17.19:
   version "4.17.20"
@@ -954,10 +954,10 @@ node-abi@^3.3.0:
   dependencies:
     semver "^7.3.5"
 
-node-addon-api@^4.2.0:
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/node-addon-api/-/node-addon-api-4.2.0.tgz#117cbb5a959dff0992e1c586ae0393573e4d2a87"
-  integrity sha512-eazsqzwG2lskuzBqCGPi7Ac2UgOoMz8JVOXVhTvvPDYhthvNpefx8jWD8Np7Gv+2Sz0FlPWZk0nJV0z598Wn8Q==
+node-addon-api@^4.3.0:
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/node-addon-api/-/node-addon-api-4.3.0.tgz#52a1a0b475193e0928e98e0426a0d1254782b77f"
+  integrity sha512-73sE9+3UaLYYFmDsFZnqCInzPyh3MqIwZO9cw58yIqAZhONrrabrYyYe3TuIqtIiOuTXVhsGau8hcrhhwSsDIQ==
 
 npmlog@^4.0.1:
   version "4.1.2"
@@ -1028,12 +1028,12 @@ pg-connection-string@^2.5.0:
   resolved "https://registry.yarnpkg.com/pg-connection-string/-/pg-connection-string-2.5.0.tgz#538cadd0f7e603fc09a12590f3b8a452c2c0cf34"
   integrity sha512-r5o/V/ORTA6TmUnyWZR9nCj1klXCO2CEKNRlVuJptZe85QuhFayC7WeMic7ndayT5IRIR0S0xFxFi2ousartlQ==
 
-prebuild-install@^7.0.0:
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/prebuild-install/-/prebuild-install-7.0.0.tgz#3c5ce3902f1cb9d6de5ae94ca53575e4af0c1574"
-  integrity sha512-IvSenf33K7JcgddNz2D5w521EgO+4aMMjFt73Uk9FRzQ7P+QZPKrp7qPsDydsSwjGt3T5xRNnM1bj1zMTD5fTA==
+prebuild-install@^7.0.1:
+  version "7.0.1"
+  resolved "https://registry.yarnpkg.com/prebuild-install/-/prebuild-install-7.0.1.tgz#c10075727c318efe72412f333e0ef625beaf3870"
+  integrity sha512-QBSab31WqkyxpnMWQxubYAHR5S9B2+r81ucocew34Fkl98FhvKIF50jIJnNOBmAZfyNV7vE5T6gd3hTVWgY6tg==
   dependencies:
-    detect-libc "^1.0.3"
+    detect-libc "^2.0.0"
     expand-template "^2.0.3"
     github-from-package "0.0.0"
     minimist "^1.2.3"
@@ -1234,10 +1234,10 @@ sequelize-pool@^7.1.0:
   resolved "https://registry.yarnpkg.com/sequelize-pool/-/sequelize-pool-7.1.0.tgz#210b391af4002762f823188fd6ecfc7413020768"
   integrity sha512-G9c0qlIWQSK29pR/5U2JF5dDQeqqHRragoyahj/Nx4KOOQ3CPPfzxnfqFPCSB7x5UgjOgnZ61nSxz+fjDpRlJg==
 
-sequelize@^6.13.0:
-  version "6.13.0"
-  resolved "https://registry.yarnpkg.com/sequelize/-/sequelize-6.13.0.tgz#ce042fc511313094c1e4ca2b2ee13a563359e7b6"
-  integrity sha512-p0dXXGZSc0Ng7CdGwlKN4P6DTRD/w9Ar2CnmHamNVDnqEWh6pMVOp3xrlG5+IWhbwrqL3SjIYEYt3Xog1vXRDw==
+sequelize@^6.15.1:
+  version "6.15.1"
+  resolved "https://registry.yarnpkg.com/sequelize/-/sequelize-6.15.1.tgz#6fa2515564b04c87d355d0b54bf94910e411d140"
+  integrity sha512-UR4LMSnZ13pYL4gNOXxbmreIX1pqanSgAKy4hWjQupHHLOzF3ryckg92axirB68QJy4gaVIaknjhoO3M8zKo8A==
   dependencies:
     "@types/debug" "^4.1.7"
     debug "^4.3.3"
@@ -1268,17 +1268,17 @@ sha.js@^2.4.0, sha.js@^2.4.8:
     inherits "^2.0.1"
     safe-buffer "^5.0.1"
 
-sharp@^0.29.3:
-  version "0.29.3"
-  resolved "https://registry.yarnpkg.com/sharp/-/sharp-0.29.3.tgz#0da183d626094c974516a48fab9b3e4ba92eb5c2"
-  integrity sha512-fKWUuOw77E4nhpyzCCJR1ayrttHoFHBT2U/kR/qEMRhvPEcluG4BKj324+SCO1e84+knXHwhJ1HHJGnUt4ElGA==
+sharp@^0.30.0:
+  version "0.30.0"
+  resolved "https://registry.yarnpkg.com/sharp/-/sharp-0.30.0.tgz#b2dd62d5f14088b11c72212354f31dff6511b070"
+  integrity sha512-L3m/l6yQFr3oGBUzcSAlN/R9yGFPYqM9FpMUe6Z4nHg4sWtP3hW1rcz+aaHklhD4wX5Jqh5PY9z+A1d4Qt3Hfg==
   dependencies:
-    color "^4.0.1"
-    detect-libc "^1.0.3"
-    node-addon-api "^4.2.0"
-    prebuild-install "^7.0.0"
+    color "^4.2.0"
+    detect-libc "^2.0.0"
+    node-addon-api "^4.3.0"
+    prebuild-install "^7.0.1"
     semver "^7.3.5"
-    simple-get "^4.0.0"
+    simple-get "^4.0.1"
     tar-fs "^2.1.1"
     tunnel-agent "^0.6.0"
 
@@ -1305,6 +1305,15 @@ simple-get@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/simple-get/-/simple-get-4.0.0.tgz#73fa628278d21de83dadd5512d2cc1f4872bd675"
   integrity sha512-ZalZGexYr3TA0SwySsr5HlgOOinS4Jsa8YB2GJ6lUNAazyAu4KG/VmzMTwAt2YVXzzVj8QmefmAonZIK2BSGcQ==
+  dependencies:
+    decompress-response "^6.0.0"
+    once "^1.3.1"
+    simple-concat "^1.0.0"
+
+simple-get@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/simple-get/-/simple-get-4.0.1.tgz#4a39db549287c979d352112fa03fd99fd6bc3543"
+  integrity sha512-brv7p5WgH0jmQJr1ZDDfKDOSeWWg+OVypG99A/5vYGPqJ6pxiaHLy8nxtFjBA7oMa01ebA9gfh1uMCFqOuXxvA==
   dependencies:
     decompress-response "^6.0.0"
     once "^1.3.1"
@@ -1402,10 +1411,10 @@ striptags@^4.0.0-alpha.2:
   resolved "https://registry.yarnpkg.com/striptags/-/striptags-4.0.0-alpha.2.tgz#e911eb286a3ca5d0c1d53a8449a1a9e933b1305c"
   integrity sha512-KM2d9idEHtI4961q0UC67uIoNAuRpKh4Asjkjhw/QzXPwQlgEOcmBuP+pw2fTZpqnL2VYc7wUX0xJN/zKvXwWQ==
 
-superagent@^7.0.2:
-  version "7.0.2"
-  resolved "https://registry.yarnpkg.com/superagent/-/superagent-7.0.2.tgz#8fa6d283c9e7cd52928b96cf422356019248e8c4"
-  integrity sha512-2Kx35bZxLLJMBKtuXezxvD0aZQ7l923VwoCn7EtUx+aFxdG7co7PeRIddfrNtvvMuGaLZXA0mKzX+yWRhjrJ7A==
+superagent@^7.1.1:
+  version "7.1.1"
+  resolved "https://registry.yarnpkg.com/superagent/-/superagent-7.1.1.tgz#2ab187d38c3078c31c3771c0b751f10163a27136"
+  integrity sha512-CQ2weSS6M+doIwwYFoMatklhRbx6sVNdB99OEJ5czcP3cng76Ljqus694knFWgOj3RkrtxZqIgpe6vhe0J7QWQ==
   dependencies:
     component-emitter "^1.3.0"
     cookiejar "^2.1.3"
