@@ -165,6 +165,10 @@ async function run() {
           insert.stars = note.rating;
         }
 
+        if (note.type === 'albums') {
+          insert.image_order = '[]';
+        }
+
         await new SQL(`trevio.${note.type}`, insert)
             .setOutputFolder('notes')
             .setAllowedTags(note.type === 'albums'

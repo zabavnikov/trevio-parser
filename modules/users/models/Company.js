@@ -1,4 +1,4 @@
-const { DataTypes, sequelize } = require('../../../database');
+const { DataTypes, Sequelize, sequelize } = require('../../../database');
 
 const Company = sequelize.define('Company', {
   id: {
@@ -17,6 +17,13 @@ const Company = sequelize.define('Company', {
 }, {
   tableName: 'poi',
   timestamps: false,
+  defaultScope: {
+    where: {
+      user_id: {
+        [Sequelize.Op.gt]: 0
+      }
+    }
+  },
 });
 
 module.exports = Company;
