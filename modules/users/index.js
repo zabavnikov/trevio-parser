@@ -11,8 +11,8 @@ function run() {
       offset,
       limit,
       include: [
-        { model: Media },
-        { model: Company }
+        { model: Media, required: false },
+        { model: Company, required: false }
       ],
     })
     .then(async users => {
@@ -28,6 +28,23 @@ function run() {
 
           if (user.Company.description.length) {
             user.description = user.Company.description;
+          }
+        }
+
+        if (user.description !== null) {
+          const substrByWords = (string) => {
+            let result = string.split(' ', 60);
+            let lastWord = result[result.length - 1];
+
+            if (lastWord[lastWord.length - 1] !== '.') {
+              result[result.length - 1] += '...';
+            }
+
+            return result.join(' ');
+          }
+
+          if (user.description.length > 500) {
+            user.description = substrByWords(user.description);
           }
         }
 
