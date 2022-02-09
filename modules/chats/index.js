@@ -11,7 +11,8 @@ const {
 } = require('../../models');
 
 let offset = 0,
-    limit = 100;
+    limit = 100,
+    newChatId = 1;
 
 async function run() {
   let companies = await Company.findAll();
@@ -21,15 +22,13 @@ async function run() {
   Note
     .findAll({
       include: [
-        { model: User },
+        { model: User, required: false },
       ],
       offset,
       limit,
     })
     .then(async notes => {
       if (notes.length === 0) return;
-
-      let newChatId = 1;
 
       for (let note of notes) {
         note = note.get();
