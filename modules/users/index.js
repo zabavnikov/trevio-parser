@@ -1,6 +1,5 @@
 const { SQL, Download } = require('../../classes');
 const { Company, Media, User } = require('../../models');
-const { UPLOAD_DISK } = require('../../constants');
 const { uploadDirForPermanentImages } = require('../../utils/pathBuilder');
 
 let offset = 0, limit = 500;
@@ -60,9 +59,9 @@ function run() {
 
           fields.avatar = `/users/${path}/avatar.jpg`;
 
-          /*await new Download('users', user.Medium.filename, `users/${path}`, 'avatar.jpg')
+          await new Download('users', user.Medium.filename, `users/${path}`, 'avatar.jpg')
               .setWidthHeight(200, 200)
-              .download();*/
+              .download();
         }
 
         await new SQL('trevio.users', fields)

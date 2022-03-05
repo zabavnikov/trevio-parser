@@ -3,7 +3,7 @@ const {uploadDirForPermanentImages, dateToPath, getOriginalFilePath} = require('
 const { imgproxy } = require('../../utils');
 const { Sequelize } = require('../../database');
 const { Download, SQL } = require('../../classes');
-const { UPLOAD_DISK, DOMAIN } = require('../../constants');
+const { UPLOAD_DISK } = require('../../constants');
 
 const {
   Note,
@@ -124,9 +124,9 @@ async function run() {
             const fields = {...image};
             delete fields.filename;
 
-            /*await new Download('notes', image.filename, fullPath, `${note.id}-${image.filename}`)
-                .setWidthHeight(640, 480)
-                .download();*/
+            await new Download('notes', image.filename, fullPath, `${note.id}-${image.filename}`)
+                .setWidthHeight(1920, 1080)
+                .download();
 
             if (note.type === 'notes' || note.type === 'reviews') {
               const regExp = new RegExp(getOriginalFilePath(image.filename), 'g');

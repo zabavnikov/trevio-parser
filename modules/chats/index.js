@@ -115,11 +115,11 @@ async function run() {
                 // добавить в путь дату, см загрузку в чатах на тестовом.
                 const path = uploadDirForPermanentImages(image.id) + `/${dateToPath(note.created_at)}`;
 
-                /*await new Download('chats', image.path, `/chats/${path}`, `${image.id}.jpg`)
-                    .setWidthHeight(640, 480)
+                await new Download('chats', image.path, `/chats/${path}`, `${image.id}.jpg`)
+                    .setWidthHeight(1920, 1080)
                     .skipFilePathBuilder()
-                    .setHost('/var/trevio_images/chats')
-                    .download();*/
+                    .setHost('/mnt/e/LAST_Media/chats/notes')
+                    .download();
 
                 await new SQL('trevio_chats.chats_messages_images', {
                   user_id:    image.user_id,

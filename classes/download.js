@@ -11,7 +11,6 @@ class Download {
    * @param moduleName
    * @param outputPath
    * @param outputFilename
-   * @param imgproxy
    */
   constructor(moduleName, originalFilename, outputPath, outputFilename) {
     this.moduleName       = moduleName;
@@ -76,6 +75,11 @@ class Download {
               withoutEnlargement: true
             })
             .removeAlpha()
+            .toFormat('jpeg', {
+              quality: 85,
+              chromaSubsampling: '4:4:4',
+              force: true,
+            })
             .toBuffer();
       }
 

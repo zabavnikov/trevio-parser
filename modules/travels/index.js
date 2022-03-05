@@ -98,6 +98,8 @@ async function run() {
         .setFilename('trevio.travels')
         .parse();
 
+        console.log(travel.text);
+
         await new SQL('trevio.activity', {
           key: `emitter${travel.user_id}travels${travel.id}`,
           event_id: 1,

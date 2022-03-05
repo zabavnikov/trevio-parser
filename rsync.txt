@@ -1,0 +1,1 @@
+rsync --archive --verbose --progress /local/source/ trevio@176.57.215.43:/home/trevio/imgproxy-minio-nginx/data/development

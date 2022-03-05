@@ -23,11 +23,13 @@ const Travel = sequelize.define('Travel', {
     get() {
       let text = this.getDataValue('text');
 
-      if (text && text.length > 997) {
-        text = text.substr(0, 997);
+      if (text) {
+        if (text.length > 997) {
+          text = text.substr(0, 997);
 
-        if (text[text.length - 1] !== '.') {
-          text[text.length - 1] += '.';
+          if (text[text.length - 1] !== '.') {
+            text[text.length - 1] += '.';
+          }
         }
 
         return text;
