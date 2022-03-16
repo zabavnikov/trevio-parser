@@ -24,6 +24,11 @@ const Travel = sequelize.define('Travel', {
       let text = this.getDataValue('text');
 
       if (text) {
+        text = text
+            .replace('undefined', '')
+            .replace(/&nbsp;/g, '')
+            .trim();
+
         if (text.length > 997) {
           text = text.substr(0, 997);
 
