@@ -96,6 +96,7 @@ async function run() {
           id: travel.id,
           user_id: travel.user_id,
           title: travel.title,
+          short_text: travel.short_text,
           text: `<p>${travel.short_text}</p>${travel.text}`,
           messages_count: travel.messages_count,
           likes_count: likes.length,

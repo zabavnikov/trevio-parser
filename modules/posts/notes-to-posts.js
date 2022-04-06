@@ -145,6 +145,7 @@ async function run() {
           user_id: post.user_id,
           cover_id: post.cover_id,
           title: post.title,
+          short_text: post.short_text,
           text: `<p>${post.short_text}</p>${post.text}`,
           messages_count: post.messages_count,
           likes_count: likes.length,

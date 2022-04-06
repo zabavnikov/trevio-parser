@@ -160,6 +160,11 @@ async function run() {
           published_at: note.published_at,
         };
 
+        // Типы контента с виз. редактором.
+        if (['reviews', 'notes', 'questions'].indexOf(note.type) !== -1) {
+          insert.short_text = node.short_text;
+        }
+
         if (note.type === 'reviews') {
           insert.stars = note.rating;
         }
