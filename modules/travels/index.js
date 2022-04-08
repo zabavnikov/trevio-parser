@@ -19,6 +19,7 @@ const {
 
 const LikesParserPartial = require('../likes/likes-parser-partial');
 const ShareParserPartial = require('../share/share-parser-partial');
+const Subscription = require('../subscriptions/models/Subscription');
 
 let offset = 0
     limit = 100;
@@ -57,6 +58,17 @@ async function run() {
 
       for (let travel of travels) {
         travel = travel.get();
+
+        await Subscription
+          .count({
+            where: {
+              module_id:   user.id,
+              module_type: 'travels',
+            }
+          })
+          .then((count) => {
+            travel['subscribers_count'] = count;
+          });
 
         /*
           ЛАЙКИ.

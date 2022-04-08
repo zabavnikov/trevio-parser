@@ -1,6 +1,8 @@
 const { SQL, Download } = require('../../classes');
 const { Company, Media, User } = require('../../models');
 const { uploadDirForPermanentImages } = require('../../utils/pathBuilder');
+const Subscription = require('../subscriptions/models/Subscription');
+const {EVENTS} = require('../../constants');
 
 let offset = 0, limit = 500;
 
@@ -53,8 +55,29 @@ function run() {
           updated_at:         user.updated_at,
         }
 
+        // Считаем подписчиков и подписки.
+        await Subscription
+            .count({
+              where: {
+                user_id: user.id
+              }
+            })
+            .then((count) => {
+              fields['subscriptions_count'] = count;
+            });
+        await Subscription
+            .count({
+              where: {
+                module_id:   user.id,
+                module_type: 'users',
+              }
+            })
+            .then((count) => {
+              fields['subscribers_count'] = count;
+            });
+
         // Парсим аватарку если есть.
-        if (user.avatar > 0) {
+        /*if (user.avatar > 0) {
           const path = uploadDirForPermanentImages(user.id);
 
           fields.avatar = `/users/${path}/avatar.jpg`;
@@ -62,7 +85,7 @@ function run() {
           await new Download('users', user.Medium.filename, `users/${path}`, 'avatar.jpg')
               .setWidthHeight(200, 200)
               .download();
-        }
+        }*/
 
         await new SQL('trevio.users', fields)
             .setOutputFolder('users')
