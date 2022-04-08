@@ -4,7 +4,7 @@ const uploadDirForContentImages = (model) => {
     return dateToPath(model.created_at, model.user_id)
 };
 
-const uploadDirForPermanentImages = (modelId, depth = 3) => {
+const uploadDirForPermanentImages = (modelId, depth = 2) => {
     return [
         md5(modelId).substr(0, depth * 2).match(/[a-z0-9]{2}/g).join('/'),
         modelId
