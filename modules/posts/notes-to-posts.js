@@ -130,7 +130,7 @@ async function run() {
                 post.text = post.text.replace(regExp, imgproxy(image.path));
               }
             } else if (post.type === 'albums') {
-              post.text += `<p><ce-image src="${imgproxy(image.path)}" id="${image.id}"></ce-image></p>`
+              post.text += `<p><img src="${imgproxy(image.path)}" data-id="${image.id}" alt="" /></p>`
             }
 
             await new SQL('trevio.posts_images', fields)
@@ -159,7 +159,7 @@ async function run() {
 
         await new SQL('trevio.posts', insert)
             .setOutputFolder('posts')
-            .setAllowedTags(['p', 'ce-image', 'a', 'ce-embed'])
+            .setAllowedTags(['p', 'image', 'a', 'provider'])
             .parse();
 
         await new SQL('trevio.activity', {

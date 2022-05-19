@@ -177,7 +177,7 @@ async function run() {
             .setOutputFolder('notes')
             .setAllowedTags(note.type === 'albums'
                 ? []
-                : ['p', 'ce-image', 'a', 'ce-embed']
+                : ['p', 'image', 'a', 'provider']
             )
             .parse();
 

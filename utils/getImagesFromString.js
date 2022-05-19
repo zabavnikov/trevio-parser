@@ -1,5 +1,5 @@
 module.exports = string => {
-  const regExp = /<ce-image.*?src="(.*?)".*?data-id="(.*?)"><\/ce-image>/g;
+  const regExp = /<image.*?src="(.*?)".*?data-id="(.*?)"><\/image>/g;
   const images = [];
 
   let image;
