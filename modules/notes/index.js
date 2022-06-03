@@ -149,6 +149,7 @@ async function run() {
           travel_id: note.travel_id,
           cover_id: note.cover_id,
           title: note.title,
+          short_text: note.short_text,
           text: `<p>${note.short_text}</p>${note.text}`,
           messages_count: note.messages_count,
           likes_count: likes.length,
