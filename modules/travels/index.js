@@ -86,7 +86,8 @@ async function run() {
           model_type: 'Modules\\Travels\\Entities\\Travel',
         }, travel);
 
-        await new SQL('travels', {
+
+        const travelFields = {
           id: travel.id,
           user_id: travel.user_id,
           title: travel.title,
@@ -104,13 +105,17 @@ async function run() {
           updated_at: travel.updated_at,
           deleted_at: travel.deleted_at,
           published_at: travel.published_at,
-        })
+        };
+
+        if (travelFields.budget > 0) {
+          travelFields.currency_id = 1;
+        }
+
+        await new SQL('travels', travelFields)
         .setOutputFolder('travels')
         .setAllowedTags([])
         .setFilename('trevio.travels')
         .parse();
-
-        console.log(travel.text);
 
         await new SQL('trevio.activity', {
           key: `emitter${travel.user_id}travels${travel.id}`,
