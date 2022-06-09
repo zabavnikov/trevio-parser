@@ -19,7 +19,7 @@ module.exports = async (outputFolder, tableName, where, model = {}) => {
 
       const activityFields = {
         key:          `emitter${like.user_id}${model.type}${model.id}`,
-        event_id:     EVENTS.likes.eventId,
+        type_id:     EVENTS.likes.eventId,
         weight:       EVENTS.likes.weight,
         emitter_id:   like.user_id,
         recipient_id: model.user_id,

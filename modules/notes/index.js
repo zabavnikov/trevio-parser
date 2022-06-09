@@ -190,7 +190,7 @@ async function run() {
 
         await new SQL(`trevio.activity`, {
           key: activityKey,
-          event_id: 1,
+          type_id: 1,
           emitter_id: note.user_id,
           recipient_id: note.user_id,
           travel_id: note.travel_id,

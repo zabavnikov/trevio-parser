@@ -32,7 +32,7 @@ function run() {
 
           await new SQL('trevio.activity', {
             key: `emitter${subscription.subscriber_id}users${subscription.model_id}`,
-            event_id: EVENTS.subscriptions.eventId,
+            type_id: EVENTS.subscriptions.eventId,
             weight: EVENTS.subscriptions.weight,
             emitter_id: subscription.subscriber_id,
             recipient_id: subscription.model_id,
