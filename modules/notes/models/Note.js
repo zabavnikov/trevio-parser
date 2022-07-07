@@ -80,28 +80,28 @@ const Note = sequelize.define('Note', {
             'src="https://trevio.ru/imagecache/$1"'
           ).replace(
             /<img(.*?)>/g,
-            '<image$1></image>'
+            '<tiptap-image$1></tiptap-image>'
           ).replace(
             /<iframe.*?src="(.*?)"[^>]+><\/iframe>/g,
-            '<provider src="$1"></provider>'
+            '<tiptap-embed src="$1"></tiptap-embed>'
           )
           .replace('&nbsp;', '')
           .replace('undefined', '')
           .replace(/<p>\s<\/p>/g, '')
           .trim();
 
-        const providers = text.match(/<provider.*?src="(.*?)"><\/provider>/g);
+        const embeds = text.match(/<tiptap-embed.*?src="(.*?)"><\/tiptap-embed>/g);
 
-        if (providers) {
+        if (embeds) {
           const youtubeRegExp =
               /^(?:(?:https?:)?\/\/)?(?:www\.)?(?:m\.)?(?:youtu(?:be)?\.com\/(?:v\/|embed\/|watch(?:\/|\?v=))|youtu\.be\/)((?:\w|-){11})(?:\S+)?$/;
 
-          providers.forEach(provider => {
-            const item = /<provider.*?src="(.*?)"><\/provider>/.exec(provider);
+          embeds.forEach(embed => {
+            const item = /<tiptap-embed.*?src="(.*?)"><\/tiptap-embed>/.exec(embed);
             const videoId = youtubeRegExp.exec(item[1]);
 
             if (videoId) {
-              text = text.replace(provider, `<provider data-id="${videoId[1]}" data-name="youtube"></provider>`)
+              text = text.replace(embed, `<tiptap-embed data-id="${videoId[1]}" data-name="youtube"></tiptap-embed>`)
             }
           });
         }

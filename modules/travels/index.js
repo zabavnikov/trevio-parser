@@ -101,10 +101,10 @@ async function run() {
           share_count: share.length,
           date_start: travel.date_start,
           date_end: travel.date_end,
+          published_at: travel.published_at,
           created_at: travel.created_at,
           updated_at: travel.updated_at,
           deleted_at: travel.deleted_at,
-          published_at: travel.published_at,
         };
 
         if (travelFields.budget > 0) {
