@@ -21,15 +21,6 @@ const User = sequelize.define('User', {
   },
   description: {
     type: DataTypes.STRING,
-    get() {
-      const value = this.getDataValue('description');
-
-      if (value) {
-        return value.substr(0, 1000);
-      }
-
-      return null;
-    }
   },
   avatar: {
     type: DataTypes.INTEGER,
