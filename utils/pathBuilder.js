@@ -1,12 +1,16 @@
-const md5 = require('md5');
+const crypto = require('crypto')
 
 const uploadDirForContentImages = (model) => {
     return dateToPath(model.created_at, model.user_id)
 };
 
-const uploadDirForPermanentImages = (modelId, depth = 2) => {
+const uploadDirForPermanentImages = (modelId, depth = 3) => {
+    const md5 = crypto.createHash('md5')
+        .update(modelId + '')
+        .digest('hex');
+
     return [
-        md5(modelId).substr(0, depth * 2).match(/[a-z0-9]{2}/g).join('/'),
+        md5.substr(0, depth * 2).match(/[a-z0-9]{2}/g).join('/'),
         modelId
     ].join('/')
 };

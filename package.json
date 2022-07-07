@@ -11,10 +11,10 @@
   "dependencies": {
     "axios": "^0.25.0",
     "create-hmac": "^1.1.7",
+    "crypto": "^1.0.1",
     "jsdom": "^19.0.0",
     "locutus": "^2.0.16",
     "lodash": "^4.17.21",
-    "md5": "^2.3.0",
     "minimist": "^1.2.5",
     "moment": "^2.29.1",
     "mysql2": "^2.3.3",
