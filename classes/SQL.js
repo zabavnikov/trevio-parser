@@ -1,4 +1,5 @@
-const fs = require('fs');
+const { mkdir } = require('node:fs/promises');
+const { existsSync, writeFileSync, appendFileSync } = require('node:fs');
 const path = require('path');
 const forEach = require('lodash/forEach');
 const striptags = require("striptags").striptags;
@@ -61,7 +62,7 @@ class SQL {
    */
   _normalize(fields) {
     forEach(fields, (value, key) => {
-      if (value !== null) {
+      if (value) {
         if (typeof value === 'string') {
           if (value.length > 1000) {
             fields[key] = value.substr(0, 1000);
@@ -72,9 +73,12 @@ class SQL {
           }
 
           // Удаляем &nbsp;.
-          value = value.replace(/&nbsp;/g, '');
           // Удаляем пустые теги p.
-          value = value.replace(/<p>\s*<\/p>/g, '');
+          value = value.replaceAll('&nbsp;', '');
+          value = value.replaceAll('<p></p>', '');
+          value = value.replace(new RegExp(String.fromCharCode(160), 'g'), '');
+          value = value.replace(/<p>\s*<\/p>/gi, '');
+          value = value.replaceAll('undefined', '');
 
           if (this.allowedTags.size) {
             value = striptags(value, {
@@ -98,19 +102,25 @@ class SQL {
    *
    */
   async parse() {
-    const file = `${path.resolve(__dirname, `../modules/${this.folder}`)}/output/${this.filename}.sql`;
+    const outputFolder = `${path.resolve(__dirname, `../modules/${this.folder}`)}/output`;
+
+    if (! await existsSync(outputFolder)) {
+      await mkdir(outputFolder, { recursive: true })
+    }
+
+    const file = `${outputFolder}/${this.filename}.sql`;
 
     this.fields = this._normalize(this.fields);
 
-    if (! await fs.existsSync(file)) {
-      await fs.writeFileSync(file, '');
+    if (! await existsSync(file)) {
+      await writeFileSync(file, '');
     }
 
     const columns = Object.keys(this.fields).map(column => {
       return '`' + column + '`';
     }).join(', ');
 
-    await fs.appendFileSync(
+    await appendFileSync(
         file,
         `INSERT INTO ${this.tableName} (${columns}) VALUES (${Object.values(this.fields).join(', ')});\r\n`,
         function (error) {

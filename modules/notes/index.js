@@ -149,7 +149,6 @@ async function run() {
           travel_id: note.travel_id,
           cover_id: note.cover_id,
           title: note.title,
-          short_text: note.short_text,
           text: `<p>${note.short_text}</p>${note.text}`,
           messages_count: note.messages_count,
           likes_count: likes.length,
@@ -163,7 +162,7 @@ async function run() {
 
         // Типы контента с виз. редактором.
         if (['reviews', 'notes', 'questions'].indexOf(note.type) !== -1) {
-          insert.short_text = node.short_text;
+          insert.short_text = note.short_text;
         }
 
         if (note.type === 'reviews') {
@@ -178,7 +177,7 @@ async function run() {
             .setOutputFolder('notes')
             .setAllowedTags(note.type === 'albums'
                 ? []
-                : ['p', 'image', 'a', 'provider']
+                : ['p', 'tiptap-image', 'a', 'tiptap-embed']
             )
             .parse();
 

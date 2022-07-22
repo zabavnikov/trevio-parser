@@ -85,9 +85,6 @@ const Note = sequelize.define('Note', {
             /<iframe.*?src="(.*?)"[^>]+><\/iframe>/g,
             '<tiptap-embed src="$1"></tiptap-embed>'
           )
-          .replace('&nbsp;', '')
-          .replace('undefined', '')
-          .replace(/<p>\s<\/p>/g, '')
           .trim();
 
         const embeds = text.match(/<tiptap-embed.*?src="(.*?)"><\/tiptap-embed>/g);
@@ -101,7 +98,7 @@ const Note = sequelize.define('Note', {
             const videoId = youtubeRegExp.exec(item[1]);
 
             if (videoId) {
-              text = text.replace(embed, `<tiptap-embed data-id="${videoId[1]}" data-name="youtube"></tiptap-embed>`)
+              text = text.replace(embed, `<tiptap-embed data-id="${videoId[1]}" data-provider="youtube"></tiptap-embed>`)
             }
           });
         }

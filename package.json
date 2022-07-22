@@ -7,7 +7,8 @@
     "subs-users": "node ./modules/subscriptions/index-users.js",
     "subs-travels": "node ./modules/subscriptions/index-travels.js",
     "notes-posts": "node ./modules/posts/notes-to-posts.js",
-    "travels-posts": "node ./modules/posts/travels-to-posts.js"
+    "travels-posts": "node ./modules/posts/travels-to-posts.js",
+    "clear": "rm -rf ./modules/users/output ./modules/travels/output ./modules/notes/output ./modules/chats/output ./modules/subscriptions/output ./modules/posts/output"
   },
   "dependencies": {
     "axios": "^0.27.2",
