@@ -62,7 +62,7 @@ class SQL {
    */
   _normalize(fields) {
     forEach(fields, (value, key) => {
-      if (value) {
+      if (value !== null) {
         if (typeof value === 'string') {
           if (value.length > 1000) {
             fields[key] = value.substr(0, 1000);
@@ -72,13 +72,19 @@ class SQL {
             value = value.replace(new RegExp(/("|')/, 'gm'), '');
           }
 
-          // Удаляем &nbsp;.
-          // Удаляем пустые теги p.
-          value = value.replaceAll('&nbsp;', '');
-          value = value.replaceAll('<p></p>', '');
-          value = value.replace(new RegExp(String.fromCharCode(160), 'g'), '');
-          value = value.replace(/<p>\s*<\/p>/gi, '');
+          value = value.replaceAll('&nbsp;', ''); // Удаляем &nbsp;.
+          value = value.replace(new RegExp(String.fromCharCode(160), 'g'), ''); // Удаляем &nbsp;.
           value = value.replaceAll('undefined', '');
+
+          function removeEmptyP(string, iterations){
+            for (let i = 0; i < iterations; i++) {
+              string = string.split('<p><\/p>').join('');
+            }
+
+            return string;
+          }
+
+          value = removeEmptyP(value, 10)
 
           if (this.allowedTags.size) {
             value = striptags(value, {
