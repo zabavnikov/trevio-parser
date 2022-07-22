@@ -1,11 +1,11 @@
 const { SQL } = require('../../classes');
 const { EVENTS } = require('../../constants');
-const Subscription = require('../subscriptions/models/Subscription');
+const SubscriptionTravel = require('../subscriptions/models/SubscriptionTravel');
 
 let offset = 0, unique = {};
 
 function run() {
-  Subscription
+  SubscriptionTravel
     .findAll({
       offset,
       limit: 100,
@@ -16,31 +16,32 @@ function run() {
       for (let subscription of subscriptions) {
         subscription = subscription.get();
 
-        const uniqueKey = subscription.subscriber_id + 'users' + subscription.model_id;
+        const uniqueKey = subscription.subscriber_id + 'travels' + subscription.model_id;
 
         // В базе есть дубли, поэтому выбираем только уникальные записи.
         if (! unique.hasOwnProperty(uniqueKey)) {
           await new SQL('trevio.subscriptions', {
             subscriber_id: subscription.subscriber_id,
-            model_user_id: subscription.model_id,
-            model_type: 'users',
+            model_user_id: subscription.Travel.User.id,
+            model_type: 'travels',
             model_id: subscription.model_id,
             created_at: subscription.created_at,
           })
+              .setOutputFilename('trevio.subscriptions_travels')
               .setOutputFolder('subscriptions')
               .parse();
 
           await new SQL('trevio.activity', {
-            key: `emitter${subscription.subscriber_id}users${subscription.model_id}`,
+            key: `emitter${subscription.subscriber_id}travels${subscription.model_id}`,
             type_id: EVENTS.subscriptions.eventId,
             weight: EVENTS.subscriptions.weight,
             emitter_id: subscription.subscriber_id,
             recipient_id: subscription.model_id,
-            model_type: 'users',
+            model_type: 'travels',
             model_id: subscription.model_id,
             created_at: subscription.created_at,
           })
-              .setOutputFilename('trevio.subscriptions_activity')
+              .setOutputFilename('trevio.subscriptions_travels_activity')
               .setOutputFolder('subscriptions')
               .parse();
 

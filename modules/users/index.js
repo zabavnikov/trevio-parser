@@ -1,8 +1,10 @@
 const { SQL, Download } = require('../../classes');
 const { Company, Media, User } = require('../../models');
 const { uploadDirForPermanentImages } = require('../../utils/pathBuilder');
-const Subscription = require('../subscriptions/models/Subscription');
-const {EVENTS} = require('../../constants');
+const SubscriptionUser = require('../subscriptions/models/SubscriptionUser');
+const SubscriptionTravel = require('../subscriptions/models/SubscriptionTravel');
+const { EVENTS } = require('../../constants');
+const { Sequelize } = require('sequelize');
 
 let offset = 0, limit = 500;
 
@@ -55,26 +57,33 @@ function run() {
           updated_at:         user.updated_at,
         }
 
-        // Считаем подписчиков и подписки.
-        await Subscription
+        // Считаем подписки.
+        await SubscriptionUser
             .count({
               where: {
-                user_id: user.id
+                user_id: user.id,
               }
             })
-            .then((count) => {
-              fields['subscriptions_count'] = count;
-            });
-        await Subscription
+            .then((count) => fields['subscriptions_users_count'] = count);
+
+        // Считаем подписки на путешествия.
+        await SubscriptionTravel
             .count({
               where: {
-                module_id:   user.id,
+                user_id: user.id,
+              }
+            })
+            .then((count) => fields['subscriptions_travels_count'] = count);
+
+        // Считаем подписчиков.
+        await SubscriptionUser
+            .count({
+              where: {
+                module_id: user.id,
                 module_type: 'users',
               }
             })
-            .then((count) => {
-              fields['subscribers_count'] = count;
-            });
+            .then((count) => fields['subscribers_count'] = count);
 
         // Парсим аватарку если есть.
         /*if (user.avatar > 0) {
