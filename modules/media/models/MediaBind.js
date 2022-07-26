@@ -18,6 +18,9 @@ const MediaBind = sequelize.define('MediaBind', {
 }, {
   tableName: 'media_bind',
   timestamps: false,
+  defaultScope: {
+    order: ['created_at', 'DESC']
+  }
 });
 
 MediaBind.belongsTo(Media, {

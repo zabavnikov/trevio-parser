@@ -9,6 +9,7 @@ const {
   Company,
   Note,
 } = require('../../models');
+const {NOTE_IMAGE_SIZE} = require('../../constants');
 
 let offset = 0,
     limit = 100,
@@ -116,7 +117,7 @@ async function run() {
                 const path = uploadDirForPermanentImages(image.id) + `/${dateToPath(note.created_at)}`;
 
                 await new Download('chats', image.path, `/chats/${path}`, `${image.id}.jpg`)
-                    .setWidthHeight(1920, 1080)
+                    .setWidthHeight(NOTE_IMAGE_SIZE[0], NOTE_IMAGE_SIZE[0])
                     .skipFilePathBuilder()
                     .setHost('/mnt/e/LAST_Media/chats/notes')
                     .download();

@@ -54,6 +54,11 @@ class Download {
   }
 
   async download() {
+    if (! existsSync(this.host)) {
+      console.log('Path not found. Skip images.')
+      return;
+    }
+
     let file = this.getOriginalFilePath(this.originalFilename);
 
     if (existsSync(file)) {

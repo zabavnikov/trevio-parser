@@ -1,13 +1,11 @@
 const getImagesFromString = require('../../utils/getImagesFromString');
 const {uploadDirForPermanentImages, dateToPath, getOriginalFilePath} = require('../../utils/pathBuilder');
-const { imgproxy } = require('../../utils');
 
-const {UPLOAD_DISK, DOMAIN} = require('../../constants');
+const {UPLOAD_DISK, NOTE_IMAGE_SIZE} = require('../../constants');
 const { Download, SQL } = require('../../classes');
 
 const {
   Note,
-  User,
   MediaBind,
   Media,
   Company
@@ -17,8 +15,13 @@ const LikesParserPartial = require('../likes/likes-parser-partial');
 const ShareParserPartial = require('../share/share-parser-partial');
 
 let limit = 100,
-    offset = 0
-globalImageID = 26;
+    offset = 0;
+const globalImageID = {
+  notes: 0,
+  reviews: 0,
+  albums: 0,
+  posts: 0,
+}
 
 async function run() {
   const companies = await Company.findAll();
@@ -82,17 +85,17 @@ async function run() {
               filename
             });
 
-            globalImageID++;
+            globalImageID[post.type]++;
 
-            if (MediaBind.dataValues.tag == 'cover' && !post.cover_id) {
-              post.cover_id = globalImageID;
+            if (MediaBind.dataValues.tag === 'cover' && !post.cover_id) {
+              post.cover_id = globalImageID[post.type];
             }
           }
         }
 
         // Парсим фотки из текста. Потому что в старой бд, есть фотки без module_id
         // а без него не узнать к какой-то заметки оно привязано, по-этому делаем хитрый ход.
-        if (post.type === 'notes' || post.type === 'reviews') {
+        if (post.type === 'notes' || post.type === 'reviews' || post.type === 'posts') {
           const imagesFromText = getImagesFromString(post.text);
 
           if (imagesFromText.length) {
@@ -105,10 +108,10 @@ async function run() {
                 filename: image.filename,
               });
 
-              globalImageID++;
+              globalImageID[post.type]++;
 
               if (image.id) {
-                post.text = post.text.replace(new RegExp(`data-id="${image.id}"`, 'g'), `data-id="${globalImageID}"`);
+                post.text = post.text.replace(new RegExp(`data-id="${image.id}"`, 'g'), `data-id="${globalImageID[post.type]}"`);
               }
             })
           }
@@ -120,17 +123,17 @@ async function run() {
             delete fields.filename;
 
             await new Download('posts', image.filename, fullPath, `${post.id}-${image.filename}`)
-                .setWidthHeight(640, 480)
+                .setWidthHeight(NOTE_IMAGE_SIZE[0], NOTE_IMAGE_SIZE[1])
                 .download();
 
-            if (post.type === 'notes' || post.type === 'reviews') {
+            if (post.type === 'albums') {
+              post.text += `<tiptap-image src="https://images.treviodev.ru/development/${image.path}" data-id="${image.id}"></tiptap-image>`
+            } else {
               const regExp = new RegExp(getOriginalFilePath(image.filename), 'g');
 
               if (regExp.test(post.text)) {
-                post.text = post.text.replace(regExp, imgproxy(image.path));
+                post.text = post.text.replace(regExp, `https://images.treviodev.ru/development/${image.path}`);
               }
-            } else if (post.type === 'albums') {
-              post.text += `<p><img src="${imgproxy(image.path)}" data-id="${image.id}" alt="" /></p>`
             }
 
             await new SQL('trevio.posts_images', fields)
@@ -159,7 +162,10 @@ async function run() {
 
         await new SQL('trevio.posts', insert)
             .setOutputFolder('posts')
-            .setAllowedTags(['p', 'image', 'a', 'provider'])
+            .setAllowedTags(post.type === 'albums'
+                ? []
+                : ['p', 'tiptap-image', 'a', 'tiptap-embed', 'h2']
+            )
             .parse();
 
         await new SQL('trevio.activity', {
@@ -167,7 +173,6 @@ async function run() {
           type_id: 1,
           emitter_id: post.user_id,
           recipient_id: post.user_id,
-          travel_id: post.id,
           model_type: 'posts',
           model_id: post.id,
           weight: 0.0120,

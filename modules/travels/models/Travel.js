@@ -17,6 +17,9 @@ const Travel = sequelize.define('Travel', {
   title: {
     type: DataTypes.STRING,
   },
+  short_text: {
+    type: DataTypes.STRING,
+  },
   text: {
     type: DataTypes.STRING,
     field: 'wysiwyg',

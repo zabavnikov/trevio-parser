@@ -1,5 +1,5 @@
 const { SQL, Download } = require('../../classes');
-const { UPLOAD_DISK } = require('../../constants');
+const { UPLOAD_DISK, NOTE_IMAGE_SIZE} = require('../../constants');
 const { Sequelize } = require('../../database');
 const { uploadDirForPermanentImages, dateToPath } = require('../../utils/pathBuilder');
 
@@ -88,7 +88,7 @@ async function run() {
           coverId++;
 
           await new Download('posts', cover.filename, outputPath, filename)
-              .setWidthHeight(1024, 768)
+              .setWidthHeight(NOTE_IMAGE_SIZE[0], NOTE_IMAGE_SIZE[1])
               .download();
         }
 
@@ -96,8 +96,7 @@ async function run() {
           id: travel.id,
           user_id: travel.user_id,
           title: travel.title,
-          short_text: travel.short_text,
-          text: `<p>${travel.short_text}</p>${travel.text}`,
+          text: travel.text,
           messages_count: travel.messages_count,
           likes_count: likes.length,
           share_count: share.length,
@@ -114,6 +113,7 @@ async function run() {
 
         await new SQL('posts', fields)
         .setOutputFolder('posts')
+        .setAllowedTags(['p', 'tiptap-image', 'a', 'tiptap-embed', 'h2'])
         .setFilename('trevio.posts')
         .parse();
 

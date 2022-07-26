@@ -1,5 +1,5 @@
 const { SQL, Download } = require('../../classes');
-const { UPLOAD_DISK } = require('../../constants');
+const { UPLOAD_DISK, TRAVEL_IMAGE_SIZE} = require('../../constants');
 const { Sequelize } = require('../../database');
 const { uploadDirForPermanentImages, dateToPath } = require('../../utils/pathBuilder');
 
@@ -153,9 +153,9 @@ async function run() {
             .setFilename('trevio.travels_images')
             .parse();
 
-          /*await new Download('travels', cover.filename, outputPath, filename)
-              .setWidthHeight(1024, 768)
-              .download();*/
+          await new Download('travels', cover.filename, outputPath, filename)
+              .setWidthHeight(TRAVEL_IMAGE_SIZE[0], TRAVEL_IMAGE_SIZE[1])
+              .download();
         }
       }
 

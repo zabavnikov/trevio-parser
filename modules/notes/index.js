@@ -1,9 +1,8 @@
 const getImagesFromString = require('../../utils/getImagesFromString');
 const {uploadDirForPermanentImages, dateToPath, getOriginalFilePath} = require('../../utils/pathBuilder');
-const { imgproxy } = require('../../utils');
 const { Sequelize } = require('../../database');
 const { Download, SQL } = require('../../classes');
-const { UPLOAD_DISK } = require('../../constants');
+const { UPLOAD_DISK, NOTE_IMAGE_SIZE } = require('../../constants');
 
 const {
   Note,
@@ -125,14 +124,14 @@ async function run() {
             delete fields.filename;
 
             await new Download('notes', image.filename, fullPath, `${note.id}-${image.filename}`)
-                .setWidthHeight(1920, 1080)
+                .setWidthHeight(NOTE_IMAGE_SIZE[0], NOTE_IMAGE_SIZE[1])
                 .download();
 
             if (note.type === 'notes' || note.type === 'reviews') {
               const regExp = new RegExp(getOriginalFilePath(image.filename), 'g');
 
               if (regExp.test(note.text)) {
-                note.text = note.text.replace(regExp, imgproxy(image.path));
+                note.text = note.text.replace(regExp, `https://images.treviodev.ru/development/${image.path}`);
               }
             }
 

@@ -86,7 +86,7 @@ function run() {
             .then((count) => fields['subscribers_count'] = count);
 
         // Парсим аватарку если есть.
-        /*if (user.avatar > 0) {
+        if (user.avatar > 0) {
           const path = uploadDirForPermanentImages(user.id);
 
           fields.avatar = `/users/${path}/avatar.jpg`;
@@ -94,7 +94,7 @@ function run() {
           await new Download('users', user.Medium.filename, `users/${path}`, 'avatar.jpg')
               .setWidthHeight(200, 200)
               .download();
-        }*/
+        }
 
         await new SQL('trevio.users', fields)
             .setOutputFolder('users')
