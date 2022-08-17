@@ -8,18 +8,20 @@
     "subs-travels": "node ./modules/subscriptions/index-travels.js",
     "notes-posts": "node ./modules/posts/notes-to-posts.js",
     "travels-posts": "node ./modules/posts/travels-to-posts.js",
-    "clear": "rm -rf ./modules/users/output/*.sql ./modules/travels/output/*.sql ./modules/notes/output/*.sql ./modules/chats/output/*.sql ./modules/subscriptions/output/*.sql ./modules/posts/output/*.sql"
+    "clear": "rm -rf ./modules/users/output ./modules/travels/output ./modules/notes/output ./modules/chats/output ./modules/subscriptions/output ./modules/posts/output"
   },
   "dependencies": {
     "axios": "^0.27.2",
     "create-hmac": "^1.1.7",
     "crypto": "^1.0.1",
+    "image-downloader": "^4.3.0",
     "jsdom": "^19.0.0",
     "locutus": "^2.0.16",
     "lodash": "^4.17.21",
     "minimist": "^1.2.5",
     "moment": "^2.29.1",
     "mysql2": "^2.3.3",
+    "node-html-parser": "^5.3.3",
     "request": "^2.88.2",
     "request-promise": "^4.2.6",
     "sequelize": "^6.21.3",

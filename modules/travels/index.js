@@ -1,4 +1,5 @@
 const { SQL, Download } = require('../../classes');
+const { rndString } = require('../../utils');
 const { UPLOAD_DISK, TRAVEL_IMAGE_SIZE} = require('../../constants');
 const { Sequelize } = require('../../database');
 const { uploadDirForPermanentImages, dateToPath } = require('../../utils/pathBuilder');
@@ -135,25 +136,26 @@ async function run() {
         /*
           ОБЛОЖКИ ПУТЕШЕСТВИЙ.
          */
-        const path = uploadDirForPermanentImages(travel.user_id);
-        const outputPath = `users/${path}/travels/${dateToPath(travel.created_at)}`;
         const cover = travel.MediaBind
             ? travel.MediaBind.Medium
             : null;
-        const filename = `cover-${travel.id}.jpg`;
 
         if (cover) {
+          const path = uploadDirForPermanentImages(travel.user_id);
+          const outputPath = `${path}/travels/${dateToPath(travel.created_at)}`;
+          const outputFileName = rndString();
+
           await new SQL('trevio.travels_images', {
             user_id: travel.user_id,
             model_id: travel.id,
             disk: UPLOAD_DISK,
-            path: outputPath + '/' + filename,
+            path: outputPath + '/' + outputFileName,
           })
             .setOutputFolder('travels')
             .setFilename('trevio.travels_images')
             .parse();
 
-          await new Download('travels', cover.filename, outputPath, filename)
+          await new Download('travels', cover.filename, outputPath, outputFileName)
               .setWidthHeight(TRAVEL_IMAGE_SIZE[0], TRAVEL_IMAGE_SIZE[1])
               .download();
         }

@@ -1,5 +1,6 @@
 const getImagesFromString = require('../../utils/getImagesFromString');
 const {uploadDirForPermanentImages, dateToPath, getOriginalFilePath} = require('../../utils/pathBuilder');
+const { rndString } = require('../../utils');
 
 const {UPLOAD_DISK, NOTE_IMAGE_SIZE} = require('../../constants');
 const { Download, SQL } = require('../../classes');
@@ -65,7 +66,7 @@ async function run() {
         }, post);
 
         const path = uploadDirForPermanentImages(post.user_id);
-        const fullPath = `users/${path}/posts/${dateToPath(post.created_at)}`;
+        const fullPath = `${path}/posts/${dateToPath(post.created_at)}`;
         const imageRepository = [];
 
         /*
@@ -75,14 +76,14 @@ async function run() {
 
         if (post.MediaBinds.length) {
           for (const MediaBind of post.MediaBinds) {
-            const filename = MediaBind.Medium.dataValues.filename;
+            const filename = rndString();
 
             imageRepository.push({
               user_id: post.user_id,
               model_id: post.id,
               disk: UPLOAD_DISK,
-              path: `${fullPath}/${post.id}-${filename}`,
-              filename
+              path: `${fullPath}/${filename}`,
+              filename: filename
             });
 
             globalImageID[post.type]++;
@@ -100,12 +101,14 @@ async function run() {
 
           if (imagesFromText.length) {
             imagesFromText.forEach(image => {
+              const filename = rndString();
+
               imageRepository.push({
                 user_id: post.user_id,
                 model_id: post.id,
                 disk: UPLOAD_DISK,
-                path: `${fullPath}/${post.id}-${image.filename}`,
-                filename: image.filename,
+                path: `${fullPath}/${filename}`,
+                filename: filename,
               });
 
               globalImageID[post.type]++;
@@ -122,7 +125,7 @@ async function run() {
             const fields = {...image};
             delete fields.filename;
 
-            await new Download('posts', image.filename, fullPath, `${post.id}-${image.filename}`)
+            await new Download('posts', image.filename, fullPath, image.filename)
                 .setWidthHeight(NOTE_IMAGE_SIZE[0], NOTE_IMAGE_SIZE[1])
                 .download();
 

@@ -1,8 +1,11 @@
+const { mkdir } = require('node:fs/promises');
 const getImagesFromString = require('../../utils/getImagesFromString');
-const {uploadDirForPermanentImages, dateToPath, getOriginalFilePath} = require('../../utils/pathBuilder');
+const { uploadDirForPermanentImages, dateToPath, getOriginalFilePath } = require('../../utils/pathBuilder');
 const { Sequelize } = require('../../database');
 const { Download, SQL } = require('../../classes');
-const { UPLOAD_DISK, NOTE_IMAGE_SIZE } = require('../../constants');
+const { rndString } = require('../../utils');
+const download = require('image-downloader');
+const { UPLOAD_DISK, NOTE_IMAGE_SIZE, IMAGE_HOST } = require('../../constants');
 
 const {
   Note,
@@ -46,7 +49,7 @@ async function run() {
     .then(async notes => {
       if (notes.length === 0) return;
 
-      for (let note of notes) {
+      for await (let note of notes) {
         note = note.get();
 
         /*
@@ -66,7 +69,7 @@ async function run() {
         }, note);
 
         const path = uploadDirForPermanentImages(note.user_id);
-        const fullPath = `users/${path}/${note.type}/${dateToPath(note.created_at)}`;
+        const fullPath = `${path}/${note.type}/${dateToPath(note.created_at)}`;
         const imageRepository = [];
 
         /*
@@ -75,15 +78,17 @@ async function run() {
         note.cover_id = null;
 
         if (note.MediaBinds.length) {
-          for (const MediaBind of note.MediaBinds) {
-            const filename = MediaBind.Medium.dataValues.filename;
+
+          for await (const MediaBind of note.MediaBinds) {
+            const outputFilename = rndString();
 
             imageRepository.push({
               user_id: note.user_id,
               model_id: note.id,
               disk: UPLOAD_DISK,
-              path: `${fullPath}/${note.id}-${filename}`,
-              filename
+              path: `${fullPath}/${outputFilename}`,
+              originalFilename: MediaBind.Medium.dataValues.filename,
+              outputFilename: outputFilename
             });
 
             globalImageID[note.type]++;
@@ -97,43 +102,64 @@ async function run() {
         // Парсим фотки из текста. Потому что в старой бд, есть фотки без module_id
         // а без него не узнать к какой-то заметки оно привязано, по-этому делаем хитрый ход.
         if (note.type === 'notes' || note.type === 'reviews') {
-          const imagesFromText = getImagesFromString(note.text);
+          const { string, images } = getImagesFromString(note.text);
 
-          if (imagesFromText.length) {
-            imagesFromText.forEach(image => {
+          note.text = string;
+
+          if (images.length) {
+            for await (let image of images) {
+              if (image.isRemote) {
+                console.log(image.src + '---' + image.outputFilename)
+
+                try {
+                  const absolutePath = `/home/denis/trevio/parser/modules/notes/output/images/${fullPath}`;
+
+                  await mkdir(absolutePath, { recursive: true });
+
+                  await download.image({
+                    url: image.src,
+                    dest: `${absolutePath}/${image.outputFilename}`
+                  })
+                } catch (error) {
+                  console.log(error)
+                }
+              }
+
               imageRepository.push({
                 user_id: note.user_id,
                 model_id: note.id,
                 disk: UPLOAD_DISK,
-                path: `${fullPath}/${note.id}-${image.filename}`,
-                filename: image.filename,
+                path: `${fullPath}/${image.outputFilename}`,
+                originalFilename: image.originalFilename,
+                outputFilename: image.outputFilename
               });
 
               globalImageID[note.type]++;
 
-              if (image.id) {
-                note.text = note.text.replace(new RegExp(`data-id="${image.id}"`, 'g'), `data-id="${globalImageID[note.type]}"`);
-              }
-            })
+              note.text = note.text
+                  .replace(new RegExp(`data-id="${image.src}"`, 'g'), `data-id="${globalImageID[note.type]}"`)
+                  .replace(new RegExp(`src="${image.src}"`, 'g'), `src="${IMAGE_HOST}/${fullPath}/${image.outputFilename}"`);
+            }
           }
         }
 
         if (imageRepository.length) {
-          for (const image of imageRepository) {
-            const fields = {...image};
-            delete fields.filename;
-
-            await new Download('notes', image.filename, fullPath, `${note.id}-${image.filename}`)
+          for await (let image of imageRepository) {
+            await new Download('notes', image.originalFilename, fullPath, image.outputFilename)
                 .setWidthHeight(NOTE_IMAGE_SIZE[0], NOTE_IMAGE_SIZE[1])
                 .download();
 
-            if (note.type === 'notes' || note.type === 'reviews') {
+           /* if (note.type === 'notes' || note.type === 'reviews') {
               const regExp = new RegExp(getOriginalFilePath(image.filename), 'g');
 
               if (regExp.test(note.text)) {
                 note.text = note.text.replace(regExp, `https://images.treviodev.ru/development/${image.path}`);
               }
-            }
+            }*/
+            const fields = {...image};
+
+            delete fields.originalFilename;
+            delete fields.outputFilename;
 
             await new SQL(`${note.type}_images`, fields)
                 .setOutputFolder('notes')

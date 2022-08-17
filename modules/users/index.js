@@ -89,9 +89,9 @@ function run() {
         if (user.avatar > 0) {
           const path = uploadDirForPermanentImages(user.id);
 
-          fields.avatar = `/users/${path}/avatar.jpg`;
+          fields.avatar = `${path}/avatar.jpg`;
 
-          await new Download('users', user.Medium.filename, `users/${path}`, 'avatar.jpg')
+          await new Download('users', user.Medium.filename, `${path}`, 'avatar.jpg')
               .setWidthHeight(200, 200)
               .download();
         }

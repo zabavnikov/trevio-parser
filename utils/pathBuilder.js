@@ -4,18 +4,19 @@ const uploadDirForContentImages = (model) => {
     return dateToPath(model.created_at, model.user_id)
 };
 
-const uploadDirForPermanentImages = (modelId, depth = 3) => {
+const uploadDirForPermanentImages = (userId) => {
     const md5 = crypto.createHash('md5')
-        .update(modelId + '')
+        .update(userId + '')
         .digest('hex');
 
     return [
-        md5.substr(0, depth * 2).match(/[a-z0-9]{2}/g).join('/'),
-        modelId
+        'users',
+        md5.substr(0, 6).match(/[a-z0-9]{2}/g).join('/'),
+        userId
     ].join('/')
 };
 
-const dateToPath = (modelCreatedAt, modelUserId = null) => {
+const dateToPath = (modelCreatedAt = null) => {
     const date = new Date(Date.parse(modelCreatedAt));
 
     const year = date.getFullYear();
@@ -27,10 +28,6 @@ const dateToPath = (modelCreatedAt, modelUserId = null) => {
         month <= 9 ? '0' + month : month,
         day <= 9 ? '0' + day : day,
     ];
-
-    if (modelUserId) {
-        path.push(modelUserId)
-    }
 
     return path.join('/')
 }

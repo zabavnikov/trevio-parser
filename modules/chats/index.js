@@ -1,4 +1,5 @@
 const { SQL, Download } = require('../../classes');
+const { rndString } = require('../../utils');
 const { uploadDirForPermanentImages, dateToPath } = require('../../utils/pathBuilder');
 const ChatMessage = require('./models/ChatMessage');
 const ChatMessageImage = require('./models/ChatMessageImage');
@@ -114,19 +115,21 @@ async function run() {
             if (images.length) {
               for (const image of images) {
                 // добавить в путь дату, см загрузку в чатах на тестовом.
-                const path = uploadDirForPermanentImages(image.id) + `/${dateToPath(note.created_at)}`;
+                const path = uploadDirForPermanentImages(note.user_id) + `/chats/${dateToPath(note.created_at)}`;
 
-                await new Download('chats', image.path, `/chats/${path}`, `${image.id}.jpg`)
+                const fileName = `${rndString()}.jpg`;
+
+                await new Download('chats', image.path, path, fileName)
                     .setWidthHeight(NOTE_IMAGE_SIZE[0], NOTE_IMAGE_SIZE[0])
                     .skipFilePathBuilder()
-                    .setHost('/mnt/e/LAST_Media/chats/notes')
+                    .setHost('/mnt/d/LAST_Media/chats/notes')
                     .download();
 
                 await new SQL('trevio_chats.chats_messages_images', {
                   user_id:    image.user_id,
                   model_id:   message.id,
                   disk:       's3',
-                  path:       `/chats/${path}/${image.id}.jpg`,
+                  path:       `${path}/${fileName}`,
                 })
                     .setDumpFolder('chats')
                     .parse();

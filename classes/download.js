@@ -3,7 +3,7 @@ const { existsSync } = require('fs');
 const path = require('path');
 const sharp = require('sharp');
 
-const { STORAGE_PATH } = require('../constants');
+const { STORAGE_PATH, SKIP_DOWNLOAD } = require('../constants');
 
 class Download {
   /**
@@ -54,8 +54,8 @@ class Download {
   }
 
   async download() {
-    if (! existsSync(this.host)) {
-      console.log('Path not found. Skip images.')
+    if (SKIP_DOWNLOAD) {
+      console.log('SKIP DOWNLOAD')
       return;
     }
 
