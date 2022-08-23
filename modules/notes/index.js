@@ -5,7 +5,7 @@ const { Sequelize } = require('../../database');
 const { Download, SQL } = require('../../classes');
 const { rndString } = require('../../utils');
 const download = require('image-downloader');
-const { UPLOAD_DISK, NOTE_IMAGE_SIZE, IMAGE_HOST } = require('../../constants');
+const { UPLOAD_DISK, NOTE_IMAGE_SIZE, IMAGE_HOST, SKIP_DOWNLOAD } = require('../../constants');
 
 const {
   Note,
@@ -108,7 +108,7 @@ async function run() {
 
           if (images.length) {
             for await (let image of images) {
-              if (image.isRemote) {
+              if (image.isRemote && SKIP_DOWNLOAD === false) {
                 console.log(image.src + '---' + image.outputFilename)
 
                 try {
@@ -137,6 +137,7 @@ async function run() {
               globalImageID[note.type]++;
 
               note.text = note.text
+                  .replace(new RegExp(`(data-src="(.*?)")`, 'g'), '')
                   .replace(new RegExp(`data-id="${image.src}"`, 'g'), `data-id="${globalImageID[note.type]}"`)
                   .replace(new RegExp(`src="${image.src}"`, 'g'), `src="${IMAGE_HOST}/${fullPath}/${image.outputFilename}"`);
             }

@@ -2,7 +2,7 @@ module.exports = {
   UPLOAD_DISK: 's3',
   IMAGE_HOST: 'https://images.treviodev.ru/development',
   STORAGE_DISK: 's3',
-  SKIP_DOWNLOAD: false,
+  SKIP_DOWNLOAD: true,
   // home
   STORAGE_PATH: '/mnt/d/LAST_Media/webserver/public_html/shared/storage/app/public/media',
 
