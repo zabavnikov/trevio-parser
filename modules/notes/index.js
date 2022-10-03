@@ -179,7 +179,6 @@ async function run() {
           messages_count: note.messages_count,
           likes_count: likes.length,
           share_count: share.length,
-          images_count: imageRepository.length,
           created_at: note.created_at,
           updated_at: note.updated_at,
           deleted_at: note.deleted_at,
@@ -196,7 +195,7 @@ async function run() {
         }
 
         if (note.type === 'albums') {
-          insert.image_order = '[]';
+          insert.image_order = imageRepository.map((item, index) => index);
         }
 
         await new SQL(`trevio.${note.type}`, insert)
