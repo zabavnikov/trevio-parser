@@ -1,6 +1,6 @@
 module.exports = {
   UPLOAD_DISK: 's3',
-  IMAGE_HOST: 'https://images.treviodev.ru/development',
+  IMAGE_HOST: 'https://s3.trevio.ru/testing',
   STORAGE_DISK: 's3',
   SKIP_DOWNLOAD: true,
   // home
@@ -12,15 +12,12 @@ module.exports = {
   EVENTS: {
     likes: {
       eventId: 2,
-      weight: 2,
     },
     subscriptions: {
       eventId: 3,
-      weight:  3,
     },
     share: {
       eventId: 4,
-      weight:  4,
     }
   },
 

@@ -64,7 +64,7 @@ function run() {
                 user_id: user.id,
               }
             })
-            .then((count) => fields['subscriptions_users_count'] = count);
+            .then((count) => fields['subscriptions_count'] = count);
 
         // Считаем подписки на путешествия.
         await SubscriptionTravel
@@ -73,7 +73,7 @@ function run() {
                 user_id: user.id,
               }
             })
-            .then((count) => fields['subscriptions_travels_count'] = count);
+            .then((count) => fields['subscriptions_count'] = count);
 
         // Считаем подписчиков.
         await SubscriptionUser

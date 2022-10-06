@@ -220,7 +220,6 @@ async function run() {
           travel_id: note.travel_id,
           model_type: note.type,
           model_id: note.id,
-          weight: 0.0120,
           created_at: note.created_at,
         })
         .setOutputFolder('notes')

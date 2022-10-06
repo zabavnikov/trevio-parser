@@ -178,7 +178,6 @@ async function run() {
           recipient_id: post.user_id,
           model_type: 'posts',
           model_id: post.id,
-          weight: 0.0120,
           created_at: post.created_at,
         })
         .setOutputFolder('posts')

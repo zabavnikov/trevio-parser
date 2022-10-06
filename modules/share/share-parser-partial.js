@@ -22,7 +22,6 @@ module.exports = async (outputFolder, tableName, where, model) => {
     await new SQL('trevio.activity', {
       key:          `emitter${share.user_id}${share.model_type}${share.model_id}`,
       type_id:      EVENTS.share.eventId,
-      weight:       EVENTS.share.weight,
       emitter_id:   share.user_id,
       recipient_id: model.user_id,
       model_type:   model.type,
