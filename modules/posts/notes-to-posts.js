@@ -66,7 +66,7 @@ async function run() {
         }, post);
 
         const path = uploadDirForPermanentImages(post.user_id);
-        const fullPath = `${path}/posts/${dateToPath(post.created_at)}`;
+        const fullPath = `${path}/${dateToPath(post.created_at)}`;
         const imageRepository = [];
 
         /*

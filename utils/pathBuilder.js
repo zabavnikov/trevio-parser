@@ -4,15 +4,14 @@ const uploadDirForContentImages = (model) => {
     return dateToPath(model.created_at, model.user_id)
 };
 
-const uploadDirForPermanentImages = (userId) => {
+const uploadDirForPermanentImages = (id, folder = 'users') => {
     const md5 = crypto.createHash('md5')
-        .update(userId + '')
+        .update(id + '')
         .digest('hex');
 
     return [
-        'users',
-        md5.substr(0, 6).match(/[a-z0-9]{2}/g).join('/'),
-        userId
+        md5.substring(0, 4).match(/[a-z0-9]{2}/g).join('/'),
+        id
     ].join('/')
 };
 

@@ -1,1 +1,1 @@
-rsync --archive --verbose --progress /home/denis/trevio/parser/modules/users/output/images trevio@176.57.215.43:/home/trevio/imgproxy-minio-nginx/data/development
+rsync --archive --verbose --progress --chown=root:root /home/denis/trevio/parser/modules/users/output/images root@5.23.48.246:/var/lib/docker/volumes/trevio_data-minio/_data/testing

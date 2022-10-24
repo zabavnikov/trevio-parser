@@ -19,7 +19,7 @@ module.exports = async (outputFolder, tableName, where, model) => {
         .setOutputFolder(outputFolder)
         .parse();
 
-    await new SQL('trevio.activity', {
+    /*await new SQL('trevio.activity', {
       key:          `emitter${share.user_id}${share.model_type}${share.model_id}`,
       type_id:      EVENTS.share.eventId,
       emitter_id:   share.user_id,
@@ -30,7 +30,7 @@ module.exports = async (outputFolder, tableName, where, model) => {
     })
         .setOutputFilename(`trevio.${tableName}_activity`)
         .setOutputFolder(outputFolder)
-        .parse();
+        .parse();*/
   }
 
   return shares;

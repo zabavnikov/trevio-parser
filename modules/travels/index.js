@@ -141,7 +141,7 @@ async function run() {
 
         if (cover) {
           const path = uploadDirForPermanentImages(travel.user_id);
-          const outputPath = `${path}/travels/${dateToPath(travel.created_at)}`;
+          const outputPath = `${path}/${dateToPath(travel.created_at)}`;
           const outputFileName = rndString();
 
           await new SQL('trevio.travels_images', {

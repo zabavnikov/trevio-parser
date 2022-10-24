@@ -1,6 +1,7 @@
 const { SQL } = require('../../classes');
 const { EVENTS } = require('../../constants');
 const SubscriptionTravel = require('../subscriptions/models/SubscriptionTravel');
+const { User } = require('../../models');
 
 let offset = 0, unique = {};
 
@@ -15,6 +16,12 @@ function run() {
 
       for (let subscription of subscriptions) {
         subscription = subscription.get();
+
+        const u = User.findByPk(subscription.model_id)
+
+        if (!u) {
+          alert(1)
+        }
 
         const uniqueKey = subscription.subscriber_id + 'travels' + subscription.model_id;
 
@@ -31,7 +38,7 @@ function run() {
               .setOutputFolder('subscriptions')
               .parse();
 
-          await new SQL('trevio.activity', {
+          /*await new SQL('trevio.activity', {
             key: `emitter${subscription.subscriber_id}travels${subscription.model_id}`,
             type_id: EVENTS.subscriptions.eventId,
             emitter_id: subscription.subscriber_id,
@@ -42,7 +49,7 @@ function run() {
           })
               .setOutputFilename('trevio.subscriptions_travels_activity')
               .setOutputFolder('subscriptions')
-              .parse();
+              .parse();*/
 
           unique[uniqueKey] = true;
         }

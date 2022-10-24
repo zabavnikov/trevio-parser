@@ -1,4 +1,6 @@
 const timestamps = require('./timestamps');
+const { v4: uuidv4 } = require('uuid');
+
 const rnd = (() => {
   const gen = (min, max) => max++ && [...Array(max-min)].map((s, i) => String.fromCharCode(min+i));
 
@@ -19,5 +21,5 @@ const rnd = (() => {
 
 module.exports = {
   timestamps,
-  rndString: () => rnd(8, rnd.alphaUpper, rnd.alphaLower) + '.jpg'
+  rndString: () => uuidv4() + '.jpg'
 }

@@ -31,10 +31,10 @@ module.exports = async (outputFolder, tableName, where, model = {}) => {
         activityFields.travel_id = model.travel_id;
       }
 
-      await new SQL('trevio.activity', activityFields)
+      /*await new SQL('trevio.activity', activityFields)
           .setFilename(`trevio.${tableName}_activity`)
           .setDumpFolder(outputFolder)
-          .parse();
+          .parse();*/
     }
   }
 

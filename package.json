@@ -8,7 +8,8 @@
     "subs-travels": "node ./modules/subscriptions/index-travels.js",
     "notes-posts": "node ./modules/posts/notes-to-posts.js",
     "travels-posts": "node ./modules/posts/travels-to-posts.js",
-    "clear": "rm -rf ./modules/users/output ./modules/travels/output ./modules/notes/output ./modules/chats/output ./modules/subscriptions/output ./modules/posts/output"
+    "parse": "yarn users && yarn travels && yarn notes && yarn chats && yarn subs-users && yarn subs-travels",
+    "clear": "rm -rf ./modules/subscriptions/output ./modules/chats/output ./modules/users/output ./modules/travels/output ./modules/notes/output ./modules/chats/output ./modules/subscriptions/output ./modules/posts/output"
   },
   "dependencies": {
     "axios": "^0.27.2",
@@ -28,6 +29,6 @@
     "sharp": "^0.30.0",
     "striptags": "^4.0.0-alpha.2",
     "superagent": "^7.1.1",
-    "uuid": "^8.3.2"
+    "uuid": "^9.0.0"
   }
 }

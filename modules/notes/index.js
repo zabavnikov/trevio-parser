@@ -69,7 +69,7 @@ async function run() {
         }, note);
 
         const path = uploadDirForPermanentImages(note.user_id);
-        const fullPath = `${path}/${note.type}/${dateToPath(note.created_at)}`;
+        const fullPath = `${path}/${dateToPath(note.created_at)}`;
         const imageRepository = [];
 
         /*
@@ -195,7 +195,7 @@ async function run() {
         }
 
         if (note.type === 'albums') {
-          insert.image_order = imageRepository.map((item, index) => index);
+          insert.image_order = JSON.stringify(imageRepository.map((item, index) => index));
         }
 
         await new SQL(`trevio.${note.type}`, insert)

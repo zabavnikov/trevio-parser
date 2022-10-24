@@ -1,8 +1,8 @@
 module.exports = {
   UPLOAD_DISK: 's3',
-  IMAGE_HOST: 'https://s3.trevio.ru/testing',
+  IMAGE_HOST: 'https://s3.trevio.ru',
   STORAGE_DISK: 's3',
-  SKIP_DOWNLOAD: true,
+  SKIP_DOWNLOAD: false,
   // home
   STORAGE_PATH: '/mnt/d/LAST_Media/webserver/public_html/shared/storage/app/public/media',
 
@@ -21,6 +21,6 @@ module.exports = {
     }
   },
 
-  NOTE_IMAGE_SIZE: [640, 480],
-  TRAVEL_IMAGE_SIZE: [640, 480],
+  NOTE_IMAGE_SIZE: [1920, 1080],
+  TRAVEL_IMAGE_SIZE: [1920, 1080],
 }
